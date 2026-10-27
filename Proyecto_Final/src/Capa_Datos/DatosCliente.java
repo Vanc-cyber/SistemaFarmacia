@@ -4,15 +4,16 @@ import Capa_Entidades.Cliente;
 import java.util.ArrayList;
 
 /**
- * Administra la colección de clientes en memoria.
- * Las reglas de negocio, como impedir identificaciones duplicadas,
- * corresponden a LogicaCliente.
+ * Administra la colección de clientes en memoria. Las reglas de negocio, como
+ * impedir identificaciones duplicadas, corresponden a LogicaCliente.
  */
 public class DatosCliente {
 
     private final ArrayList<Cliente> listaClientes = new ArrayList<>();
 
-    /** Agrega un cliente a la colección. */
+    /**
+     * Agrega un cliente a la colección.
+     */
     public void agregarCliente(Cliente cliente) {
         if (cliente == null) {
             throw new IllegalArgumentException("El cliente no puede ser null.");
@@ -20,7 +21,10 @@ public class DatosCliente {
         listaClientes.add(cliente);
     }
 
-    /** Busca un cliente por identificación, ignorando mayúsculas y espacios exteriores. */
+    /**
+     * Busca un cliente por identificación, ignorando mayúsculas y espacios
+     * exteriores.
+     */
     public Cliente buscarCliente(String identificacion) {
         String identificacionBuscada = normalizarIdentificacion(identificacion);
         if (identificacionBuscada == null) {
@@ -40,12 +44,16 @@ public class DatosCliente {
         return null;
     }
 
-    /** Devuelve una copia de la lista para proteger la estructura interna. */
+    /**
+     * Devuelve una copia de la lista para proteger la estructura interna.
+     */
     public ArrayList<Cliente> listarClientes() {
         return new ArrayList<>(listaClientes);
     }
 
-    /** Reemplaza el cliente que tenga la misma identificación. */
+    /**
+     * Reemplaza el cliente que tenga la misma identificación.
+     */
     public boolean modificarCliente(Cliente cliente) {
         if (cliente == null) {
             return false;
@@ -71,7 +79,9 @@ public class DatosCliente {
         return false;
     }
 
-    /** Elimina el cliente que coincida con la identificación indicada. */
+    /**
+     * Elimina el cliente que coincida con la identificación indicada.
+     */
     public boolean eliminarCliente(String identificacion) {
         String identificacionBuscada = normalizarIdentificacion(identificacion);
         if (identificacionBuscada == null) {
@@ -92,6 +102,7 @@ public class DatosCliente {
         }
         return false;
     }
+    //método  para limpiar y validar la identificación antes de compararla o buscarl//
 
     private String normalizarIdentificacion(String identificacion) {
         if (identificacion == null) {

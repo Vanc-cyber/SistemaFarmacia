@@ -60,7 +60,7 @@ public class DetalleVenta {
         this.subTotal = subTotal;
     }
       
-    /*Este metodo me permite calcular el subtotal de la venta*/
+    /*Este metodo me permite calcular el subtotal de la venta y se llama desde capa Logica*/
     public double calcularSubtotal() {
     this.subTotal = this.cantidad * this.precioUnitario;
     return this.subTotal;

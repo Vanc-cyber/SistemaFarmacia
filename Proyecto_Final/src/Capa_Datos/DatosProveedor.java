@@ -1,16 +1,15 @@
+
 package Capa_Datos;
 
 import Capa_Entidades.Proveedor;
 import java.util.ArrayList;
 
-/**
- * Almacena y consulta proveedores en memoria.
- * Las validaciones de negocio se realizan en LogicaProveedor.
- */
 public class DatosProveedor {
 
+    // Lista donde se almacenan los proveedores
     private final ArrayList<Proveedor> listaProveedores = new ArrayList<>();
 
+    // Agrega un proveedor a la lista
     public void agregarProveedor(Proveedor proveedor) {
         if (proveedor == null) {
             throw new IllegalArgumentException("El proveedor no puede ser null.");
@@ -18,6 +17,7 @@ public class DatosProveedor {
         listaProveedores.add(proveedor);
     }
 
+    // Busca un proveedor por su identificación
     public Proveedor buscarProveedor(String identificacion) {
         String buscada = normalizar(identificacion);
         if (buscada == null) {
@@ -36,10 +36,12 @@ public class DatosProveedor {
         return null;
     }
 
+    // Devuelve los proveedores registrados
     public ArrayList<Proveedor> listarProveedores() {
         return new ArrayList<>(listaProveedores);
     }
 
+    // Modifica un proveedor existente
     public boolean modificarProveedor(Proveedor proveedor) {
         if (proveedor == null) {
             return false;
@@ -60,6 +62,7 @@ public class DatosProveedor {
         return false;
     }
 
+    // Elimina un proveedor por su identificación
     public boolean eliminarProveedor(String identificacion) {
         String buscada = normalizar(identificacion);
         if (buscada == null) {
@@ -77,6 +80,7 @@ public class DatosProveedor {
         return false;
     }
 
+    // Elimina espacios y valida el texto recibido
     private String normalizar(String valor) {
         if (valor == null || valor.trim().isEmpty()) {
             return null;

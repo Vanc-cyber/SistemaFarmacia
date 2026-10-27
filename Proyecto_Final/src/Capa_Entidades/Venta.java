@@ -73,7 +73,7 @@ public class Venta {
         this.total = total;
     }
 
-    /*Metodo que recorre todos los detalles y suma los subtotales*/
+    /*Metodo que recorre todos los detalles y suma los subtotales y se llama en capa Logica*/
     public double calcularTotal() {
         total = 0.0;
 
