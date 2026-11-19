@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 package Capa_Interfaz.Vistas;
 
 import java.awt.BorderLayout;
@@ -58,7 +57,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // MENU LATERAL
     // =========================================
-
     private void crearMenuLateral() {
 
         JPanel menu = new JPanel();
@@ -117,8 +115,8 @@ public class VentanaPrincipal extends JFrame {
         boton.setContentAreaFilled(true);
         boton.setAlignmentX(LEFT_ALIGNMENT);
 
-        boton.addActionListener(e ->
-                cardLayout.show(panelContenido, seccion));
+        boton.addActionListener(e
+                -> cardLayout.show(panelContenido, seccion));
 
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -138,7 +136,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // ENCABEZADO
     // =========================================
-
     private void crearEncabezado() {
 
         JPanel encabezado = new JPanel(new BorderLayout());
@@ -168,7 +165,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // CONTENIDO PRINCIPAL
     // =========================================
-
     private void crearContenido() {
 
         panelContenido.setBackground(FONDO);
@@ -186,10 +182,8 @@ public class VentanaPrincipal extends JFrame {
                 "Categorias");
 
         panelContenido.add(
-                crearPanelVacio("Clientes",
-                        "Administracion de clientes."),
+                new VentanaClientes(),
                 "Clientes");
-
         panelContenido.add(
                 crearPanelVacio("Proveedores",
                         "Administracion de proveedores."),
@@ -206,7 +200,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // PANEL DE INICIO
     // =========================================
-
     private JPanel crearPanelInicio() {
 
         JPanel panel = new JPanel(new BorderLayout(15, 20));
@@ -273,7 +266,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // TARJETAS DE ESTADISTICAS
     // =========================================
-
     private JPanel crearTarjeta(
             String titulo, String descripcion, Color color) {
 
@@ -303,7 +295,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // PANELES TEMPORALES
     // =========================================
-
     private JPanel crearPanelVacio(
             String titulo, String descripcion) {
 
@@ -344,7 +335,6 @@ public class VentanaPrincipal extends JFrame {
     // =========================================
     // EJECUCION INDEPENDIENTE
     // =========================================
-
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
@@ -353,4 +343,3 @@ public class VentanaPrincipal extends JFrame {
         });
     }
 }
-
