@@ -177,8 +177,7 @@ public class VentanaPrincipal extends JFrame {
                 "Medicamentos");
 
         panelContenido.add(
-                crearPanelVacio("Categorias",
-                        "Administracion de categorias."),
+                new VentanaCategorias(),
                 "Categorias");
 
         panelContenido.add(
