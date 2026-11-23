@@ -189,8 +189,7 @@ public class VentanaPrincipal extends JFrame {
                 "Proveedores");
 
         panelContenido.add(
-                crearPanelVacio("Ventas",
-                        "Registro y consulta de ventas."),
+                new VentanaVentas(),
                 "Ventas");
 
         add(panelContenido, BorderLayout.CENTER);
