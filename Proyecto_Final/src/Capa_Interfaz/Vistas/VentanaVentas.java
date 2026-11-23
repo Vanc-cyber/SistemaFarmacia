@@ -1,7 +1,5 @@
 package Capa_Interfaz.Vistas;
 
-import Capa_Datos.DatosMedicamento;
-import Capa_Datos.DatosVenta;
 import Capa_Entidades.Cliente;
 import Capa_Entidades.DetalleVenta;
 import Capa_Entidades.Medicamento;
@@ -64,22 +62,31 @@ public class VentanaVentas extends JPanel {
     private JTable tablaVentas;
     private DefaultTableModel modeloVentas;
 
-    // Productos que se van agregando a la venta actual
+    // Productos agregados a la venta actual
     private final ArrayList<DetalleVenta> detallesActuales = new ArrayList<>();
 
-    // Comunicacion con la capa logica
+    // Lógicas compartidas con las demás ventanas
     private final LogicaCliente logicaCliente;
     private final LogicaMedicamento logicaMedicamento;
     private final LogicaVenta logicaVenta;
 
-    public VentanaVentas() {
+    public VentanaVentas(
+            LogicaCliente logicaCliente,
+            LogicaMedicamento logicaMedicamento,
+            LogicaVenta logicaVenta) {
 
-        // Medicamentos y ventas usan los mismos datos para que se rebaje el stock
-        DatosMedicamento datosMedicamento = new DatosMedicamento();
+        if (logicaCliente == null
+                || logicaMedicamento == null
+                || logicaVenta == null) {
 
-        logicaCliente = new LogicaCliente();
-        logicaMedicamento = new LogicaMedicamento(datosMedicamento);
-        logicaVenta = new LogicaVenta(new DatosVenta(), datosMedicamento);
+            throw new IllegalArgumentException(
+                    "Las capas logicas son obligatorias."
+            );
+        }
+
+        this.logicaCliente = logicaCliente;
+        this.logicaMedicamento = logicaMedicamento;
+        this.logicaVenta = logicaVenta;
 
         setLayout(new BorderLayout(0, 20));
         setBackground(FONDO);
@@ -93,7 +100,7 @@ public class VentanaVentas extends JPanel {
         actualizarTablaVentas();
         prepararNuevaVenta();
 
-        // Cada vez que se abre la seccion se recargan los datos
+        // Recarga los datos cuando se vuelve a abrir Ventas
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -104,9 +111,7 @@ public class VentanaVentas extends JPanel {
         });
     }
 
-    // =========================================
-    // ENCABEZADO
-    // =========================================
+    // Crea el encabezado
     private void crearEncabezado() {
 
         JPanel encabezado = new JPanel(new GridLayout(2, 1, 0, 5));
@@ -126,9 +131,7 @@ public class VentanaVentas extends JPanel {
         add(encabezado, BorderLayout.NORTH);
     }
 
-    // =========================================
-    // CONTENIDO
-    // =========================================
+    // Organiza el formulario y las tablas
     private void crearContenido() {
 
         JPanel contenido = new JPanel(new BorderLayout(0, 15));
@@ -136,6 +139,7 @@ public class VentanaVentas extends JPanel {
 
         JPanel centro = new JPanel(new GridLayout(2, 1, 0, 15));
         centro.setBackground(FONDO);
+
         centro.add(crearPanelDetalle());
         centro.add(crearPanelHistorial());
 
@@ -145,14 +149,16 @@ public class VentanaVentas extends JPanel {
         add(contenido, BorderLayout.CENTER);
     }
 
-    // Formulario para armar la venta
+    // Formulario para crear la venta
     private JPanel crearFormulario() {
 
         JPanel panel = new JPanel(new BorderLayout(0, 15));
         panel.setBackground(Color.WHITE);
+
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(BORDE),
-                BorderFactory.createEmptyBorder(20, 25, 20, 25)));
+                BorderFactory.createEmptyBorder(20, 25, 20, 25)
+        ));
 
         JPanel campos = new JPanel(new GridLayout(2, 4, 15, 12));
         campos.setBackground(Color.WHITE);
@@ -164,38 +170,84 @@ public class VentanaVentas extends JPanel {
         txtCantidad = new JTextField();
 
         cmbCliente = new JComboBox<>();
+
         cmbCliente.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> lista,
-                    Object valor, int indice, boolean seleccionado, boolean foco) {
-                super.getListCellRendererComponent(lista, valor, indice, seleccionado, foco);
+            public Component getListCellRendererComponent(
+                    JList<?> lista,
+                    Object valor,
+                    int indice,
+                    boolean seleccionado,
+                    boolean foco) {
+
+                super.getListCellRendererComponent(
+                        lista,
+                        valor,
+                        indice,
+                        seleccionado,
+                        foco
+                );
+
                 if (valor instanceof Cliente) {
-                    Cliente c = (Cliente) valor;
-                    setText(c.getIdentificacion() + " - " + c.getNombre()
-                            + " " + c.getApellido1());
+
+                    Cliente cliente = (Cliente) valor;
+
+                    setText(
+                            cliente.getIdentificacion()
+                            + " - "
+                            + cliente.getNombre()
+                            + " "
+                            + cliente.getApellido1()
+                    );
+
                 } else {
                     setText("Seleccione un cliente");
                 }
+
                 return this;
             }
         });
 
         cmbMedicamento = new JComboBox<>();
+
         cmbMedicamento.setRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> lista,
-                    Object valor, int indice, boolean seleccionado, boolean foco) {
-                super.getListCellRendererComponent(lista, valor, indice, seleccionado, foco);
+            public Component getListCellRendererComponent(
+                    JList<?> lista,
+                    Object valor,
+                    int indice,
+                    boolean seleccionado,
+                    boolean foco) {
+
+                super.getListCellRendererComponent(
+                        lista,
+                        valor,
+                        indice,
+                        seleccionado,
+                        foco
+                );
+
                 if (valor instanceof Medicamento) {
-                    Medicamento m = (Medicamento) valor;
-                    setText(m.getIdMedicamento() + " - " + m.getNombre());
+
+                    Medicamento medicamento = (Medicamento) valor;
+
+                    setText(
+                            medicamento.getIdMedicamento()
+                            + " - "
+                            + medicamento.getNombre()
+                    );
+
                 } else {
                     setText("Seleccione un medicamento");
                 }
+
                 return this;
             }
         });
-        cmbMedicamento.addActionListener(e -> mostrarDatosMedicamento());
+
+        cmbMedicamento.addActionListener(
+                e -> mostrarDatosMedicamento()
+        );
 
         campos.add(crearCampo("Numero de venta", txtNumeroVenta));
         campos.add(crearCampo("Fecha", txtFecha));
@@ -207,6 +259,7 @@ public class VentanaVentas extends JPanel {
 
         JPanel espacio = new JPanel();
         espacio.setBackground(Color.WHITE);
+
         campos.add(espacio);
 
         panel.add(campos, BorderLayout.CENTER);
@@ -216,9 +269,12 @@ public class VentanaVentas extends JPanel {
     }
 
     private JTextField crearCampoSoloLectura() {
+
         JTextField campo = new JTextField();
+
         campo.setEditable(false);
         campo.setBackground(FONDO);
+
         return campo;
     }
 
@@ -241,10 +297,13 @@ public class VentanaVentas extends JPanel {
         return panel;
     }
 
-    // Crea los botones y asigna sus eventos
+    // Crea los botones y sus eventos
     private JPanel crearBotones() {
 
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel botones = new JPanel(
+                new FlowLayout(FlowLayout.LEFT, 10, 0)
+        );
+
         botones.setBackground(Color.WHITE);
 
         JButton btnAgregar = crearBoton("Agregar producto");
@@ -268,7 +327,6 @@ public class VentanaVentas extends JPanel {
         return botones;
     }
 
-    // Aplica el mismo diseño a los botones
     private JButton crearBoton(String texto) {
 
         JButton boton = new JButton(texto);
@@ -284,41 +342,65 @@ public class VentanaVentas extends JPanel {
         return boton;
     }
 
-    // =========================================
-    // TABLAS
-    // =========================================
+    // Tabla de productos de la venta actual
     private JPanel crearPanelDetalle() {
 
-        String[] columnas = {"Codigo", "Medicamento", "Cantidad",
-            "Precio unitario", "Subtotal"};
+        String[] columnas = {
+            "Codigo",
+            "Medicamento",
+            "Cantidad",
+            "Precio unitario",
+            "Subtotal"
+        };
 
         modeloDetalle = crearModelo(columnas);
         tablaDetalle = crearTabla(modeloDetalle);
 
-        lblTotal = new JLabel("Total: " + formatoMoneda(0));
-        lblTotal.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        lblTotal = new JLabel(
+                "Total: " + formatoMoneda(0)
+        );
+
+        lblTotal.setFont(
+                new Font("Segoe UI", Font.BOLD, 16)
+        );
+
         lblTotal.setForeground(AZUL_OSCURO);
 
-        JPanel pie = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel pie = new JPanel(
+                new FlowLayout(FlowLayout.RIGHT)
+        );
+
         pie.setBackground(FONDO);
         pie.add(lblTotal);
 
-        return crearSeccionTabla("Productos de la venta actual",
-                tablaDetalle, pie);
+        return crearSeccionTabla(
+                "Productos de la venta actual",
+                tablaDetalle,
+                pie
+        );
     }
 
+    // Historial de ventas
     private JPanel crearPanelHistorial() {
 
-        String[] columnas = {"Numero", "Fecha", "Cliente",
-            "Productos", "Total"};
+        String[] columnas = {
+            "Numero",
+            "Fecha",
+            "Cliente",
+            "Productos",
+            "Total"
+        };
 
         modeloVentas = crearModelo(columnas);
         tablaVentas = crearTabla(modeloVentas);
 
-        // Al hacer doble clic en una venta se muestra su detalle
-        tablaVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaVentas.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(
+                    java.awt.event.MouseEvent e) {
+
                 if (e.getClickCount() == 2) {
                     verVentaSeleccionada();
                 }
@@ -327,42 +409,75 @@ public class VentanaVentas extends JPanel {
 
         return crearSeccionTabla(
                 "Ventas registradas (doble clic para ver el detalle)",
-                tablaVentas, null);
+                tablaVentas,
+                null
+        );
     }
 
-    private DefaultTableModel crearModelo(String[] columnas) {
+    private DefaultTableModel crearModelo(
+            String[] columnas) {
+
         return new DefaultTableModel(columnas, 0) {
+
             @Override
-            public boolean isCellEditable(int fila, int columna) {
+            public boolean isCellEditable(
+                    int fila,
+                    int columna) {
+
                 return false;
             }
         };
     }
 
-    private JTable crearTabla(DefaultTableModel modelo) {
+    private JTable crearTabla(
+            DefaultTableModel modelo) {
 
         JTable tabla = new JTable(modelo);
-        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+
+        tabla.setFont(
+                new Font("Segoe UI", Font.PLAIN, 13)
+        );
+
         tabla.setRowHeight(28);
-        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+
+        tabla.getTableHeader().setFont(
+                new Font("Segoe UI", Font.BOLD, 13)
+        );
+
         tabla.getTableHeader().setBackground(AZUL_OSCURO);
         tabla.getTableHeader().setForeground(Color.WHITE);
 
         return tabla;
     }
 
-    private JPanel crearSeccionTabla(String titulo, JTable tabla, JPanel pie) {
+    private JPanel crearSeccionTabla(
+            String titulo,
+            JTable tabla,
+            JPanel pie) {
 
-        JPanel seccion = new JPanel(new BorderLayout(0, 8));
+        JPanel seccion =
+                new JPanel(new BorderLayout(0, 8));
+
         seccion.setBackground(FONDO);
 
         JLabel etiqueta = new JLabel(titulo);
-        etiqueta.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+        etiqueta.setFont(
+                new Font("Segoe UI", Font.BOLD, 14)
+        );
+
         etiqueta.setForeground(TEXTO);
 
-        JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setPreferredSize(new Dimension(0, 150));
-        scroll.setBorder(BorderFactory.createLineBorder(BORDE));
+        JScrollPane scroll =
+                new JScrollPane(tabla);
+
+        scroll.setPreferredSize(
+                new Dimension(0, 150)
+        );
+
+        scroll.setBorder(
+                BorderFactory.createLineBorder(BORDE)
+        );
 
         seccion.add(etiqueta, BorderLayout.NORTH);
         seccion.add(scroll, BorderLayout.CENTER);
@@ -374,161 +489,219 @@ public class VentanaVentas extends JPanel {
         return seccion;
     }
 
-    // =========================================
-    // CARGA DE DATOS
-    // =========================================
+    // Carga los clientes registrados en la misma instancia compartida
     private void cargarClientes() {
 
-        Object seleccionado = cmbCliente.getSelectedItem();
+        Object seleccionado =
+                cmbCliente.getSelectedItem();
 
         cmbCliente.removeAllItems();
         cmbCliente.addItem(null);
 
-        for (Cliente cliente : logicaCliente.listarClientes()) {
+        for (Cliente cliente
+                : logicaCliente.listarClientes()) {
+
             cmbCliente.addItem(cliente);
         }
 
         cmbCliente.setSelectedItem(seleccionado);
     }
 
+    // Carga los medicamentos registrados
     private void cargarMedicamentos() {
 
-        Object seleccionado = cmbMedicamento.getSelectedItem();
+        Object seleccionado =
+                cmbMedicamento.getSelectedItem();
 
         cmbMedicamento.removeAllItems();
         cmbMedicamento.addItem(null);
 
-        for (Medicamento medicamento : logicaMedicamento.listarMedicamentos()) {
+        for (Medicamento medicamento
+                : logicaMedicamento.listarMedicamentos()) {
+
             cmbMedicamento.addItem(medicamento);
         }
 
         cmbMedicamento.setSelectedItem(seleccionado);
+
         mostrarDatosMedicamento();
     }
 
-    // Muestra precio y stock del medicamento seleccionado
+    // Muestra precio y stock del medicamento
     private void mostrarDatosMedicamento() {
 
         if (txtPrecio == null) {
             return;
         }
 
-        Medicamento medicamento = (Medicamento) cmbMedicamento.getSelectedItem();
+        Medicamento medicamento =
+                (Medicamento) cmbMedicamento.getSelectedItem();
 
         if (medicamento == null) {
+
             txtPrecio.setText("");
             txtDisponible.setText("");
+
             return;
         }
 
-        txtPrecio.setText(formatoMoneda(medicamento.getPrecio()));
-        txtDisponible.setText(String.valueOf(Math.max(0,
-                medicamento.getCantidadDisponible()
-                - cantidadEnCarrito(medicamento.getIdMedicamento()))));
+        txtPrecio.setText(
+                formatoMoneda(
+                        medicamento.getPrecio()
+                )
+        );
+
+        txtDisponible.setText(
+                String.valueOf(
+                        Math.max(
+                                0,
+                                medicamento.getCantidadDisponible()
+                                - cantidadEnCarrito(
+                                        medicamento.getIdMedicamento()
+                                )
+                        )
+                )
+        );
     }
 
-    // =========================================
-    // ACCIONES
-    // =========================================
-
-    // Agrega el medicamento seleccionado a la venta actual
+    // Agrega un medicamento a la venta actual
     private void agregarProducto() {
 
         try {
 
-            Medicamento medicamento = (Medicamento) cmbMedicamento.getSelectedItem();
+            Medicamento medicamento =
+                    (Medicamento) cmbMedicamento
+                            .getSelectedItem();
 
             if (medicamento == null) {
+
                 throw new IllegalArgumentException(
-                        "Debe seleccionar un medicamento.");
+                        "Debe seleccionar un medicamento."
+                );
             }
 
             int cantidad = leerCantidad();
 
-            // Si el medicamento ya esta en la venta se suma la cantidad
-            DetalleVenta existente = buscarDetalle(medicamento.getIdMedicamento());
+            DetalleVenta existente =
+                    buscarDetalle(
+                            medicamento.getIdMedicamento()
+                    );
 
             if (existente != null) {
-                existente.setCantidad(existente.getCantidad() + cantidad);
+
+                existente.setCantidad(
+                        existente.getCantidad()
+                        + cantidad
+                );
+
                 existente.calcularSubtotal();
+
             } else {
-                DetalleVenta detalle = new DetalleVenta(
-                        medicamento,
-                        cantidad,
-                        medicamento.getPrecio(),
-                        0);
+
+                DetalleVenta detalle =
+                        new DetalleVenta(
+                                medicamento,
+                                cantidad,
+                                medicamento.getPrecio(),
+                                0
+                        );
+
                 detalle.calcularSubtotal();
+
                 detallesActuales.add(detalle);
             }
 
             txtCantidad.setText("");
+
             actualizarTablaDetalle();
             mostrarDatosMedicamento();
 
         } catch (IllegalArgumentException e) {
+
             mostrarError(e.getMessage());
         }
     }
 
-    // Quita de la venta el producto seleccionado en la tabla
+    // Quita un medicamento de la venta
     private void quitarProducto() {
 
-        int fila = tablaDetalle.getSelectedRow();
+        int fila =
+                tablaDetalle.getSelectedRow();
 
         if (fila == -1) {
-            mostrarError("Seleccione en la tabla el producto que desea quitar.");
+
+            mostrarError(
+                    "Seleccione en la tabla "
+                    + "el producto que desea quitar."
+            );
+
             return;
         }
 
         detallesActuales.remove(fila);
+
         actualizarTablaDetalle();
         mostrarDatosMedicamento();
     }
 
-    // Registra la venta usando la capa lógica
+    // Registra la venta
     private void registrarVenta() {
 
         try {
 
-            Cliente cliente = (Cliente) cmbCliente.getSelectedItem();
+            Cliente cliente =
+                    (Cliente) cmbCliente
+                            .getSelectedItem();
 
             Venta venta = new Venta(
-                    Integer.parseInt(txtNumeroVenta.getText()),
+                    Integer.parseInt(
+                            txtNumeroVenta.getText()
+                    ),
                     new Date(),
                     cliente,
-                    new ArrayList<>(detallesActuales),
-                    0);
+                    new ArrayList<>(
+                            detallesActuales
+                    ),
+                    0
+            );
 
-            // La capa logica valida, calcula el total y rebaja el stock
             logicaVenta.registrarVenta(venta);
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Venta #" + venta.getNumeroVenta()
-                    + " registrada correctamente.\nTotal: "
-                    + formatoMoneda(venta.getTotal()),
+                    "Venta #"
+                    + venta.getNumeroVenta()
+                    + " registrada correctamente.\n"
+                    + "Total: "
+                    + formatoMoneda(
+                            venta.getTotal()
+                    ),
                     "Venta registrada",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.INFORMATION_MESSAGE
+            );
 
             actualizarTablaVentas();
             cargarMedicamentos();
             prepararNuevaVenta();
 
         } catch (IllegalArgumentException e) {
+
             mostrarError(e.getMessage());
         }
     }
 
-    // Busca una venta por número y muestra su detalle
+    // Busca una venta por numero
     private void buscarVenta() {
 
         try {
 
-            String texto = JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese el numero de la venta:",
-                    "Buscar venta",
-                    JOptionPane.QUESTION_MESSAGE);
+            String texto =
+                    JOptionPane.showInputDialog(
+                            this,
+                            "Ingrese el numero de la venta:",
+                            "Buscar venta",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
 
             if (texto == null) {
                 return;
@@ -537,132 +710,241 @@ public class VentanaVentas extends JPanel {
             int numero;
 
             try {
-                numero = Integer.parseInt(texto.trim());
+
+                numero =
+                        Integer.parseInt(
+                                texto.trim()
+                        );
+
             } catch (NumberFormatException e) {
+
                 throw new IllegalArgumentException(
-                        "El numero de venta debe ser un numero entero.");
+                        "El numero de venta debe "
+                        + "ser un numero entero."
+                );
             }
 
-            Venta venta = logicaVenta.buscarVenta(numero);
+            Venta venta =
+                    logicaVenta.buscarVenta(numero);
 
             if (venta == null) {
+
                 throw new IllegalArgumentException(
-                        "No existe una venta con ese numero.");
+                        "No existe una venta con ese numero."
+                );
             }
 
             mostrarDetalleVenta(venta);
 
         } catch (IllegalArgumentException e) {
+
             mostrarError(e.getMessage());
         }
     }
 
     private void verVentaSeleccionada() {
 
-        int fila = tablaVentas.getSelectedRow();
+        int fila =
+                tablaVentas.getSelectedRow();
 
         if (fila == -1) {
             return;
         }
 
-        int numero = Integer.parseInt(tablaVentas.getValueAt(fila, 0).toString());
-        Venta venta = logicaVenta.buscarVenta(numero);
+        int numero =
+                Integer.parseInt(
+                        tablaVentas
+                                .getValueAt(fila, 0)
+                                .toString()
+                );
+
+        Venta venta =
+                logicaVenta.buscarVenta(numero);
 
         if (venta != null) {
             mostrarDetalleVenta(venta);
         }
     }
 
-    // Muestra en una ventana emergente los productos de una venta
-    private void mostrarDetalleVenta(Venta venta) {
+    // Muestra el detalle de una venta
+    private void mostrarDetalleVenta(
+            Venta venta) {
 
-        DefaultTableModel modelo = crearModelo(new String[]{
-            "Medicamento", "Cantidad", "Precio unitario", "Subtotal"});
+        DefaultTableModel modelo =
+                crearModelo(
+                        new String[]{
+                            "Medicamento",
+                            "Cantidad",
+                            "Precio unitario",
+                            "Subtotal"
+                        }
+                );
 
-        for (DetalleVenta detalle : venta.getDetalles()) {
-            modelo.addRow(new Object[]{
-                detalle.getMedicamento().getNombre(),
-                detalle.getCantidad(),
-                formatoMoneda(detalle.getPrecioUnitario()),
-                formatoMoneda(detalle.getSubTotal())
-            });
+        for (DetalleVenta detalle
+                : venta.getDetalles()) {
+
+            modelo.addRow(
+                    new Object[]{
+                        detalle.getMedicamento()
+                                .getNombre(),
+                        detalle.getCantidad(),
+                        formatoMoneda(
+                                detalle.getPrecioUnitario()
+                        ),
+                        formatoMoneda(
+                                detalle.getSubTotal()
+                        )
+                    }
+            );
         }
 
-        JTable tabla = crearTabla(modelo);
-        JScrollPane scroll = new JScrollPane(tabla);
-        scroll.setPreferredSize(new Dimension(520, 180));
+        JTable tabla =
+                crearTabla(modelo);
 
-        JLabel info = new JLabel("<html><b>Venta #" + venta.getNumeroVenta()
-                + "</b><br>Fecha: " + formatoFecha(venta.getFecha())
-                + "<br>Cliente: " + nombreCliente(venta.getCliente())
-                + "<br>Total: <b>" + formatoMoneda(venta.getTotal())
-                + "</b></html>");
-        info.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        JScrollPane scroll =
+                new JScrollPane(tabla);
 
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
+        scroll.setPreferredSize(
+                new Dimension(520, 180)
+        );
+
+        JLabel info =
+                new JLabel(
+                        "<html><b>Venta #"
+                        + venta.getNumeroVenta()
+                        + "</b><br>Fecha: "
+                        + formatoFecha(
+                                venta.getFecha()
+                        )
+                        + "<br>Cliente: "
+                        + nombreCliente(
+                                venta.getCliente()
+                        )
+                        + "<br>Total: <b>"
+                        + formatoMoneda(
+                                venta.getTotal()
+                        )
+                        + "</b></html>"
+                );
+
+        info.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
+        JPanel panel =
+                new JPanel(
+                        new BorderLayout(0, 10)
+                );
+
         panel.add(info, BorderLayout.NORTH);
         panel.add(scroll, BorderLayout.CENTER);
 
-        JOptionPane.showMessageDialog(this, panel,
-                "Detalle de venta", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(
+                this,
+                panel,
+                "Detalle de venta",
+                JOptionPane.PLAIN_MESSAGE
+        );
     }
 
-    // Deja el formulario listo para una venta nueva
+    // Prepara el formulario para una venta nueva
     private void prepararNuevaVenta() {
 
         detallesActuales.clear();
+
         actualizarTablaDetalle();
 
-        txtNumeroVenta.setText(String.valueOf(siguienteNumeroVenta()));
-        txtFecha.setText(formatoFecha(new Date()));
+        txtNumeroVenta.setText(
+                String.valueOf(
+                        siguienteNumeroVenta()
+                )
+        );
+
+        txtFecha.setText(
+                formatoFecha(
+                        new Date()
+                )
+        );
+
         txtCantidad.setText("");
 
         cmbCliente.setSelectedItem(null);
         cmbMedicamento.setSelectedItem(null);
+
         mostrarDatosMedicamento();
     }
 
-    // =========================================
-    // AUXILIARES
-    // =========================================
     private void actualizarTablaDetalle() {
 
         modeloDetalle.setRowCount(0);
+
         double total = 0;
 
-        for (DetalleVenta detalle : detallesActuales) {
-            modeloDetalle.addRow(new Object[]{
-                detalle.getMedicamento().getIdMedicamento(),
-                detalle.getMedicamento().getNombre(),
-                detalle.getCantidad(),
-                formatoMoneda(detalle.getPrecioUnitario()),
-                formatoMoneda(detalle.getSubTotal())
-            });
+        for (DetalleVenta detalle
+                : detallesActuales) {
+
+            modeloDetalle.addRow(
+                    new Object[]{
+                        detalle.getMedicamento()
+                                .getIdMedicamento(),
+                        detalle.getMedicamento()
+                                .getNombre(),
+                        detalle.getCantidad(),
+                        formatoMoneda(
+                                detalle.getPrecioUnitario()
+                        ),
+                        formatoMoneda(
+                                detalle.getSubTotal()
+                        )
+                    }
+            );
+
             total += detalle.getSubTotal();
         }
 
-        lblTotal.setText("Total: " + formatoMoneda(total));
+        lblTotal.setText(
+                "Total: "
+                + formatoMoneda(total)
+        );
+
         lblTotal.revalidate();
     }
 
+    // Actualiza el historial de ventas
     private void actualizarTablaVentas() {
 
         modeloVentas.setRowCount(0);
 
-        for (Venta venta : logicaVenta.listarVentas()) {
+        for (Venta venta
+                : logicaVenta.listarVentas()) {
 
             int productos = 0;
-            for (DetalleVenta detalle : venta.getDetalles()) {
+
+            for (DetalleVenta detalle
+                    : venta.getDetalles()) {
+
                 productos += detalle.getCantidad();
             }
 
-            modeloVentas.addRow(new Object[]{
-                venta.getNumeroVenta(),
-                formatoFecha(venta.getFecha()),
-                nombreCliente(venta.getCliente()),
-                productos,
-                formatoMoneda(venta.getTotal())
-            });
+            modeloVentas.addRow(
+                    new Object[]{
+                        venta.getNumeroVenta(),
+                        formatoFecha(
+                                venta.getFecha()
+                        ),
+                        nombreCliente(
+                                venta.getCliente()
+                        ),
+                        productos,
+                        formatoMoneda(
+                                venta.getTotal()
+                        )
+                    }
+            );
         }
     }
 
@@ -670,8 +952,13 @@ public class VentanaVentas extends JPanel {
 
         int mayor = 0;
 
-        for (Venta venta : logicaVenta.listarVentas()) {
-            mayor = Math.max(mayor, venta.getNumeroVenta());
+        for (Venta venta
+                : logicaVenta.listarVentas()) {
+
+            mayor = Math.max(
+                    mayor,
+                    venta.getNumeroVenta()
+            );
         }
 
         return mayor + 1;
@@ -679,28 +966,44 @@ public class VentanaVentas extends JPanel {
 
     private int leerCantidad() {
 
-        String texto = txtCantidad.getText().trim();
+        String texto =
+                txtCantidad.getText().trim();
 
         if (texto.isEmpty()) {
-            throw new IllegalArgumentException("Debe ingresar la cantidad.");
+
+            throw new IllegalArgumentException(
+                    "Debe ingresar la cantidad."
+            );
         }
 
         int cantidad;
 
         try {
-            cantidad = Integer.parseInt(texto);
+
+            cantidad =
+                    Integer.parseInt(texto);
+
         } catch (NumberFormatException e) {
+
             throw new IllegalArgumentException(
-                    "La cantidad debe ser un numero entero.");
+                    "La cantidad debe ser "
+                    + "un numero entero."
+            );
         }
 
         return cantidad;
     }
 
-    private DetalleVenta buscarDetalle(int idMedicamento) {
+    private DetalleVenta buscarDetalle(
+            int idMedicamento) {
 
-        for (DetalleVenta detalle : detallesActuales) {
-            if (detalle.getMedicamento().getIdMedicamento() == idMedicamento) {
+        for (DetalleVenta detalle
+                : detallesActuales) {
+
+            if (detalle.getMedicamento()
+                    .getIdMedicamento()
+                    == idMedicamento) {
+
                 return detalle;
             }
         }
@@ -708,40 +1011,58 @@ public class VentanaVentas extends JPanel {
         return null;
     }
 
-    private int cantidadEnCarrito(int idMedicamento) {
+    private int cantidadEnCarrito(
+            int idMedicamento) {
 
-        DetalleVenta detalle = buscarDetalle(idMedicamento);
-        return detalle == null ? 0 : detalle.getCantidad();
+        DetalleVenta detalle =
+                buscarDetalle(idMedicamento);
+
+        return detalle == null
+                ? 0
+                : detalle.getCantidad();
     }
 
-    private String nombreCliente(Cliente cliente) {
+    private String nombreCliente(
+            Cliente cliente) {
 
         if (cliente == null) {
             return "";
         }
 
-        return cliente.getNombre() + " " + cliente.getApellido1();
+        return cliente.getNombre()
+                + " "
+                + cliente.getApellido1();
     }
 
-    private String formatoMoneda(double monto) {
-        return String.format("₡%,.2f", monto);
+    private String formatoMoneda(
+            double monto) {
+
+        return String.format(
+                "₡%,.2f",
+                monto
+        );
     }
 
-    private String formatoFecha(Date fecha) {
+    private String formatoFecha(
+            Date fecha) {
 
         if (fecha == null) {
             return "";
         }
 
-        return new SimpleDateFormat("dd/MM/yyyy").format(fecha);
+        return new SimpleDateFormat(
+                "dd/MM/yyyy"
+        ).format(fecha);
     }
 
-    private void mostrarError(String mensaje) {
+    private void mostrarError(
+            String mensaje) {
 
         JOptionPane.showMessageDialog(
                 this,
                 mensaje,
                 "Error",
-                JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }

@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -50,9 +49,21 @@ public class VentanaClientes extends JPanel {
     // Comunicación con la capa lógica
     private final LogicaCliente logicaCliente;
 
+    // Constructor por defecto
     public VentanaClientes() {
+        this(new LogicaCliente());
+    }
 
-        logicaCliente = new LogicaCliente();
+    // Constructor que recibe la lógica compartida
+    public VentanaClientes(LogicaCliente logicaCliente) {
+
+        if (logicaCliente == null) {
+            throw new IllegalArgumentException(
+                    "LogicaCliente es obligatoria."
+            );
+        }
+
+        this.logicaCliente = logicaCliente;
 
         setLayout(new BorderLayout(0, 20));
         setBackground(FONDO);
@@ -103,7 +114,9 @@ public class VentanaClientes extends JPanel {
 
         panel.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(225, 230, 237)),
+                        BorderFactory.createLineBorder(
+                                new Color(225, 230, 237)
+                        ),
                         BorderFactory.createEmptyBorder(20, 25, 20, 25)
                 )
         );
@@ -125,7 +138,10 @@ public class VentanaClientes extends JPanel {
         campos.add(crearCampo("Nombre", txtNombre));
         campos.add(crearCampo("Primer apellido", txtApellido1));
         campos.add(crearCampo("Segundo apellido", txtApellido2));
-        campos.add(crearCampo("Fecha nacimiento (dd/MM/yyyy)", txtFechaNacimiento));
+        campos.add(crearCampo(
+                "Fecha nacimiento (dd/MM/yyyy)",
+                txtFechaNacimiento
+        ));
         campos.add(crearCampo("Direccion", txtDireccion));
         campos.add(crearCampo("Correo electronico", txtCorreo));
         campos.add(crearCampo("Telefono", txtTelefono));
@@ -143,10 +159,8 @@ public class VentanaClientes extends JPanel {
         campos.add(espacio2);
         campos.add(espacio3);
 
-        JPanel botones = crearBotones();
-
         panel.add(campos, BorderLayout.CENTER);
-        panel.add(botones, BorderLayout.SOUTH);
+        panel.add(crearBotones(), BorderLayout.SOUTH);
 
         return panel;
     }
@@ -173,7 +187,9 @@ public class VentanaClientes extends JPanel {
     // Crea los botones y asigna sus eventos
     private JPanel crearBotones() {
 
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel botones =
+                new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+
         botones.setBackground(Color.WHITE);
 
         JButton btnRegistrar = crearBoton("Registrar");
@@ -206,7 +222,9 @@ public class VentanaClientes extends JPanel {
         boton.setForeground(Color.WHITE);
         boton.setBackground(AZUL_ACENTO);
         boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createEmptyBorder(9, 18, 9, 18));
+        boton.setBorder(
+                BorderFactory.createEmptyBorder(9, 18, 9, 18)
+        );
         boton.setOpaque(true);
         boton.setContentAreaFilled(true);
 
@@ -237,7 +255,10 @@ public class VentanaClientes extends JPanel {
 
         tablaClientes = new JTable(modeloTabla);
 
-        tablaClientes.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tablaClientes.setFont(
+                new Font("Segoe UI", Font.PLAIN, 13)
+        );
+
         tablaClientes.setRowHeight(28);
 
         tablaClientes.getTableHeader().setFont(
@@ -248,10 +269,13 @@ public class VentanaClientes extends JPanel {
         tablaClientes.getTableHeader().setForeground(Color.WHITE);
 
         // Al seleccionar una fila carga los datos del cliente
-        tablaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaClientes.addMouseListener(
+                new java.awt.event.MouseAdapter() {
 
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(
+                    java.awt.event.MouseEvent e) {
+
                 cargarClienteSeleccionado();
             }
         });
@@ -280,9 +304,11 @@ public class VentanaClientes extends JPanel {
                 return;
             }
 
-            String identificacion = tablaClientes.getValueAt(fila, 0).toString();
+            String identificacion =
+                    tablaClientes.getValueAt(fila, 0).toString();
 
-            Cliente cliente = logicaCliente.buscarCliente(identificacion);
+            Cliente cliente =
+                    logicaCliente.buscarCliente(identificacion);
 
             if (cliente != null) {
 
@@ -301,12 +327,7 @@ public class VentanaClientes extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            mostrarError(e.getMessage());
         }
     }
 
@@ -316,8 +337,10 @@ public class VentanaClientes extends JPanel {
         try {
 
             if (!txtIdentificacion.isEditable()) {
+
                 throw new IllegalArgumentException(
-                        "Presione Limpiar antes de registrar un nuevo cliente."
+                        "Presione Limpiar antes de registrar "
+                        + "un nuevo cliente."
                 );
             }
 
@@ -335,12 +358,7 @@ public class VentanaClientes extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            mostrarError(e.getMessage());
         }
     }
 
@@ -349,12 +367,13 @@ public class VentanaClientes extends JPanel {
 
         try {
 
-            String identificacion = JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese la identificación del cliente:",
-                    "Buscar cliente",
-                    JOptionPane.QUESTION_MESSAGE
-            );
+            String identificacion =
+                    JOptionPane.showInputDialog(
+                            this,
+                            "Ingrese la identificación del cliente:",
+                            "Buscar cliente",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
 
             if (identificacion == null) {
                 return;
@@ -363,26 +382,33 @@ public class VentanaClientes extends JPanel {
             identificacion = identificacion.trim();
 
             if (identificacion.isEmpty()) {
+
                 throw new IllegalArgumentException(
                         "Debe ingresar la identificación del cliente."
                 );
             }
 
             if (!identificacion.matches("\\d{9}")) {
+
                 throw new IllegalArgumentException(
-                        "La identificación debe contener exactamente 9 dígitos."
+                        "La identificación debe contener "
+                        + "exactamente 9 dígitos."
                 );
             }
 
-            Cliente cliente = logicaCliente.buscarCliente(identificacion);
+            Cliente cliente =
+                    logicaCliente.buscarCliente(identificacion);
 
             if (cliente == null) {
+
                 throw new IllegalArgumentException(
-                        "No existe un cliente registrado con esa identificación."
+                        "No existe un cliente registrado "
+                        + "con esa identificación."
                 );
             }
 
             mostrarCliente(cliente);
+
             txtIdentificacion.setEditable(false);
 
             JOptionPane.showMessageDialog(
@@ -396,12 +422,7 @@ public class VentanaClientes extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            mostrarError(e.getMessage());
         }
     }
 
@@ -411,6 +432,7 @@ public class VentanaClientes extends JPanel {
         try {
 
             if (txtIdentificacion.isEditable()) {
+
                 throw new IllegalArgumentException(
                         "Primero debe buscar o seleccionar "
                         + "el cliente que desea modificar."
@@ -419,7 +441,8 @@ public class VentanaClientes extends JPanel {
 
             Cliente cliente = crearCliente();
 
-            boolean modificado = logicaCliente.modificarCliente(cliente);
+            boolean modificado =
+                    logicaCliente.modificarCliente(cliente);
 
             if (modificado) {
 
@@ -433,22 +456,14 @@ public class VentanaClientes extends JPanel {
 
             } else {
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No se pudo modificar el cliente.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
+                mostrarError(
+                        "No se pudo modificar el cliente."
                 );
             }
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            mostrarError(e.getMessage());
         }
     }
 
@@ -457,12 +472,14 @@ public class VentanaClientes extends JPanel {
 
         try {
 
-            String identificacion = JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese la identificación del cliente que desea eliminar:",
-                    "Eliminar cliente",
-                    JOptionPane.QUESTION_MESSAGE
-            );
+            String identificacion =
+                    JOptionPane.showInputDialog(
+                            this,
+                            "Ingrese la identificación del cliente "
+                            + "que desea eliminar:",
+                            "Eliminar cliente",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
 
             if (identificacion == null) {
                 return;
@@ -471,61 +488,79 @@ public class VentanaClientes extends JPanel {
             identificacion = identificacion.trim();
 
             if (identificacion.isEmpty()) {
+
                 throw new IllegalArgumentException(
                         "Debe ingresar la identificación del cliente."
                 );
             }
 
-            // Debe tener exactamente 9 dígitos
             if (!identificacion.matches("\\d{9}")) {
+
                 throw new IllegalArgumentException(
-                        "La identificación debe contener exactamente 9 dígitos."
+                        "La identificación debe contener "
+                        + "exactamente 9 dígitos."
                 );
             }
 
-            Cliente cliente = logicaCliente.buscarCliente(identificacion);
+            Cliente cliente =
+                    logicaCliente.buscarCliente(identificacion);
 
-            // Valida que el cliente exista
             if (cliente == null) {
+
                 throw new IllegalArgumentException(
-                        "No existe un cliente registrado con esa identificación."
+                        "No existe un cliente registrado "
+                        + "con esa identificación."
                 );
             }
 
-            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat formato =
+                    new SimpleDateFormat("dd/MM/yyyy");
 
             String fecha = "";
 
             if (cliente.getFechaNacimiento() != null) {
-                fecha = formato.format(cliente.getFechaNacimiento());
+
+                fecha = formato.format(
+                        cliente.getFechaNacimiento()
+                );
             }
 
-            // Información que se muestra antes de eliminar
             String informacion =
                     "¿Está seguro de eliminar este cliente?\n\n"
-                    + "Identificación: " + cliente.getIdentificacion() + "\n"
-                    + "Nombre: " + cliente.getNombre() + "\n"
-                    + "Primer apellido: " + cliente.getApellido1() + "\n"
-                    + "Segundo apellido: " + cliente.getApellido2() + "\n"
-                    + "Fecha de nacimiento: " + fecha + "\n"
-                    + "Dirección: " + cliente.getDireccion() + "\n"
-                    + "Correo: " + cliente.getCorreoElectronico() + "\n"
-                    + "Teléfono: " + cliente.getTelefono() + "\n"
-                    + "Puntos: " + cliente.getPuntos();
+                    + "Identificación: "
+                    + cliente.getIdentificacion() + "\n"
+                    + "Nombre: "
+                    + cliente.getNombre() + "\n"
+                    + "Primer apellido: "
+                    + cliente.getApellido1() + "\n"
+                    + "Segundo apellido: "
+                    + cliente.getApellido2() + "\n"
+                    + "Fecha de nacimiento: "
+                    + fecha + "\n"
+                    + "Dirección: "
+                    + cliente.getDireccion() + "\n"
+                    + "Correo: "
+                    + cliente.getCorreoElectronico() + "\n"
+                    + "Teléfono: "
+                    + cliente.getTelefono() + "\n"
+                    + "Puntos: "
+                    + cliente.getPuntos();
 
-            int respuesta = JOptionPane.showConfirmDialog(
-                    this,
-                    informacion,
-                    "Confirmar eliminación",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
+            int respuesta =
+                    JOptionPane.showConfirmDialog(
+                            this,
+                            informacion,
+                            "Confirmar eliminación",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                    );
 
-            // Solo elimina si selecciona Sí
             if (respuesta == JOptionPane.YES_OPTION) {
 
                 boolean eliminado =
-                        logicaCliente.eliminarCliente(identificacion);
+                        logicaCliente.eliminarCliente(
+                                identificacion
+                        );
 
                 if (eliminado) {
 
@@ -539,32 +574,26 @@ public class VentanaClientes extends JPanel {
 
                 } else {
 
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "No se pudo eliminar el cliente.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
+                    mostrarError(
+                            "No se pudo eliminar el cliente."
                     );
                 }
             }
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            mostrarError(e.getMessage());
         }
     }
 
     // Obtiene los datos del formulario y crea el cliente
     private Cliente crearCliente() {
 
-        String textoPuntos = txtPuntos.getText().trim();
+        String textoPuntos =
+                txtPuntos.getText().trim();
 
         if (textoPuntos.isEmpty()) {
+
             throw new IllegalArgumentException(
                     "Los puntos son obligatorios."
             );
@@ -573,16 +602,21 @@ public class VentanaClientes extends JPanel {
         int puntos;
 
         try {
+
             puntos = Integer.parseInt(textoPuntos);
+
         } catch (NumberFormatException e) {
+
             throw new IllegalArgumentException(
                     "Los puntos deben ser un numero entero."
             );
         }
 
-        String textoFecha = txtFechaNacimiento.getText().trim();
+        String textoFecha =
+                txtFechaNacimiento.getText().trim();
 
         if (textoFecha.isEmpty()) {
+
             throw new IllegalArgumentException(
                     "La fecha de nacimiento es obligatoria."
             );
@@ -590,12 +624,14 @@ public class VentanaClientes extends JPanel {
 
         // Valida el formato dd/MM/yyyy
         if (!textoFecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
+
             throw new IllegalArgumentException(
                     "La fecha debe tener el formato dd/MM/yyyy."
             );
         }
 
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formato =
+                new SimpleDateFormat("dd/MM/yyyy");
 
         // Evita fechas inexistentes
         formato.setLenient(false);
@@ -603,8 +639,12 @@ public class VentanaClientes extends JPanel {
         Date fechaNacimiento;
 
         try {
-            fechaNacimiento = formato.parse(textoFecha);
+
+            fechaNacimiento =
+                    formato.parse(textoFecha);
+
         } catch (ParseException e) {
+
             throw new IllegalArgumentException(
                     "La fecha ingresada no es valida."
             );
@@ -612,6 +652,7 @@ public class VentanaClientes extends JPanel {
 
         // Evita fechas futuras
         if (fechaNacimiento.after(new Date())) {
+
             throw new IllegalArgumentException(
                     "La fecha de nacimiento no puede ser futura."
             );
@@ -619,14 +660,36 @@ public class VentanaClientes extends JPanel {
 
         Cliente cliente = new Cliente();
 
-        cliente.setIdentificacion(txtIdentificacion.getText().trim());
-        cliente.setNombre(txtNombre.getText().trim());
-        cliente.setApellido1(txtApellido1.getText().trim());
-        cliente.setApellido2(txtApellido2.getText().trim());
+        cliente.setIdentificacion(
+                txtIdentificacion.getText().trim()
+        );
+
+        cliente.setNombre(
+                txtNombre.getText().trim()
+        );
+
+        cliente.setApellido1(
+                txtApellido1.getText().trim()
+        );
+
+        cliente.setApellido2(
+                txtApellido2.getText().trim()
+        );
+
         cliente.setFechaNacimiento(fechaNacimiento);
-        cliente.setDireccion(txtDireccion.getText().trim());
-        cliente.setCorreoElectronico(txtCorreo.getText().trim());
-        cliente.setTelefono(txtTelefono.getText().trim());
+
+        cliente.setDireccion(
+                txtDireccion.getText().trim()
+        );
+
+        cliente.setCorreoElectronico(
+                txtCorreo.getText().trim()
+        );
+
+        cliente.setTelefono(
+                txtTelefono.getText().trim()
+        );
+
         cliente.setPuntos(puntos);
 
         return cliente;
@@ -635,25 +698,55 @@ public class VentanaClientes extends JPanel {
     // Muestra los datos de un cliente en el formulario
     private void mostrarCliente(Cliente cliente) {
 
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formato =
+                new SimpleDateFormat("dd/MM/yyyy");
 
-        txtIdentificacion.setText(cliente.getIdentificacion());
-        txtNombre.setText(cliente.getNombre());
-        txtApellido1.setText(cliente.getApellido1());
-        txtApellido2.setText(cliente.getApellido2());
+        txtIdentificacion.setText(
+                cliente.getIdentificacion()
+        );
+
+        txtNombre.setText(
+                cliente.getNombre()
+        );
+
+        txtApellido1.setText(
+                cliente.getApellido1()
+        );
+
+        txtApellido2.setText(
+                cliente.getApellido2()
+        );
 
         if (cliente.getFechaNacimiento() != null) {
+
             txtFechaNacimiento.setText(
-                    formato.format(cliente.getFechaNacimiento())
+                    formato.format(
+                            cliente.getFechaNacimiento()
+                    )
             );
+
         } else {
+
             txtFechaNacimiento.setText("");
         }
 
-        txtDireccion.setText(cliente.getDireccion());
-        txtCorreo.setText(cliente.getCorreoElectronico());
-        txtTelefono.setText(cliente.getTelefono());
-        txtPuntos.setText(String.valueOf(cliente.getPuntos()));
+        txtDireccion.setText(
+                cliente.getDireccion()
+        );
+
+        txtCorreo.setText(
+                cliente.getCorreoElectronico()
+        );
+
+        txtTelefono.setText(
+                cliente.getTelefono()
+        );
+
+        txtPuntos.setText(
+                String.valueOf(
+                        cliente.getPuntos()
+                )
+        );
     }
 
     // Actualiza la tabla con los clientes registrados
@@ -661,14 +754,19 @@ public class VentanaClientes extends JPanel {
 
         modeloTabla.setRowCount(0);
 
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formato =
+                new SimpleDateFormat("dd/MM/yyyy");
 
-        for (Cliente cliente : logicaCliente.listarClientes()) {
+        for (Cliente cliente
+                : logicaCliente.listarClientes()) {
 
             String fecha = "";
 
             if (cliente.getFechaNacimiento() != null) {
-                fecha = formato.format(cliente.getFechaNacimiento());
+
+                fecha = formato.format(
+                        cliente.getFechaNacimiento()
+                );
             }
 
             modeloTabla.addRow(
@@ -700,7 +798,20 @@ public class VentanaClientes extends JPanel {
         txtPuntos.setText("");
 
         txtIdentificacion.setEditable(true);
+
         tablaClientes.clearSelection();
+
         txtIdentificacion.requestFocus();
+    }
+
+    // Muestra mensajes de error
+    private void mostrarError(String mensaje) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }
