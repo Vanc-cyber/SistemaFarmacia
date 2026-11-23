@@ -33,4 +33,10 @@ En el primer avance se implementarán:
 - Objetos funcionando en el sistema.
 
 
-
+## Avance II
+-En el segundo avance se implementarán:
+-GUI
+-Eventos
+-Validaciones
+-Lógica del sistema
+-Programación por capas
