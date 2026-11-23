@@ -422,9 +422,9 @@ public class VentanaVentas extends JPanel {
         }
 
         txtPrecio.setText(formatoMoneda(medicamento.getPrecio()));
-        txtDisponible.setText(String.valueOf(
+        txtDisponible.setText(String.valueOf(Math.max(0,
                 medicamento.getCantidadDisponible()
-                - cantidadEnCarrito(medicamento.getIdMedicamento())));
+                - cantidadEnCarrito(medicamento.getIdMedicamento()))));
     }
 
     // =========================================
@@ -444,15 +444,6 @@ public class VentanaVentas extends JPanel {
             }
 
             int cantidad = leerCantidad();
-
-            int disponible = medicamento.getCantidadDisponible()
-                    - cantidadEnCarrito(medicamento.getIdMedicamento());
-
-            if (cantidad > disponible) {
-                throw new IllegalArgumentException(
-                        "Stock insuficiente para " + medicamento.getNombre()
-                        + ". Disponible: " + disponible);
-            }
 
             // Si el medicamento ya esta en la venta se suma la cantidad
             DetalleVenta existente = buscarDetalle(medicamento.getIdMedicamento());
@@ -500,16 +491,6 @@ public class VentanaVentas extends JPanel {
         try {
 
             Cliente cliente = (Cliente) cmbCliente.getSelectedItem();
-
-            if (cliente == null) {
-                throw new IllegalArgumentException(
-                        "Debe seleccionar un cliente.");
-            }
-
-            if (detallesActuales.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Agregue al menos un producto a la venta.");
-            }
 
             Venta venta = new Venta(
                     Integer.parseInt(txtNumeroVenta.getText()),
@@ -711,11 +692,6 @@ public class VentanaVentas extends JPanel {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "La cantidad debe ser un numero entero.");
-        }
-
-        if (cantidad <= 0) {
-            throw new IllegalArgumentException(
-                    "La cantidad debe ser mayor que cero.");
         }
 
         return cantidad;
