@@ -34,9 +34,11 @@ En el primer avance se implementarán:
 
 
 ## Avance II
--En el segundo avance se implementarán:
--GUI
--Eventos
--Validaciones
--Lógica del sistema
--Programación por capas
+
+En el segundo avance se implementarán:
+
+- GUI
+- Eventos
+- Validaciones
+- Lógica del sistema
+- Programación por capas
