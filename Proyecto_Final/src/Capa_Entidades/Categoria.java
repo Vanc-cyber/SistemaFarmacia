@@ -46,4 +46,30 @@ public class Categoria {
         this.idCategoria = idCategoria;
     }
 
+    // Texto que se muestra en un JComboBox<Categoria>
+    @Override
+    public String toString() {
+        return idCategoria + " - " + nombre;
+    }
+
+    // Dos categorías son iguales si tienen el mismo identificador
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        return idCategoria == ((Categoria) obj).idCategoria;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(idCategoria);
+    }
+
 }
