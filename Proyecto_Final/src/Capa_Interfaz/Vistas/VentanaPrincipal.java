@@ -4,6 +4,7 @@
  */
 package Capa_Interfaz.Vistas;
 
+import Capa_LogicaNegocio.LogicaCategoria;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -35,6 +36,9 @@ public class VentanaPrincipal extends JFrame {
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel panelContenido = new JPanel(cardLayout);
 
+    // Lógica compartida entre las ventanas
+    private final LogicaCategoria logicaCategoria = new LogicaCategoria();
+    
     public VentanaPrincipal() {
 
         setTitle("Sistema de Gestion de Farmacia");
@@ -177,7 +181,7 @@ public class VentanaPrincipal extends JFrame {
                 "Medicamentos");
 
         panelContenido.add(
-                new VentanaCategorias(),
+                new VentanaCategorias(logicaCategoria),
                 "Categorias");
 
         panelContenido.add(
