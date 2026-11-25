@@ -8,6 +8,7 @@ import Capa_LogicaNegocio.LogicaCategoria;
 import Capa_LogicaNegocio.LogicaCliente;
 import Capa_LogicaNegocio.LogicaMedicamento;
 import Capa_LogicaNegocio.LogicaVenta;
+import Capa_LogicaNegocio.LogicaProveedor;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -27,7 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class VentanaPrincipal extends JFrame {
-
+    
     // Colores principales
     private final Color AZUL_OSCURO = new Color(23, 37, 58);
     private final Color AZUL_SECUNDARIO = new Color(34, 52, 78);
@@ -44,13 +45,17 @@ public class VentanaPrincipal extends JFrame {
     private final DatosMedicamento datosMedicamento = new DatosMedicamento();
     private final DatosVenta datosVenta = new DatosVenta();
 
+    
     // Logicas compartidas entre las ventanas
     private final LogicaCliente logicaCliente =
             new LogicaCliente(datosCliente);
 
     private final LogicaMedicamento logicaMedicamento =
             new LogicaMedicamento(datosMedicamento);
-
+    
+    private final LogicaProveedor logicaProveedor = 
+            new LogicaProveedor();
+            
     private final LogicaVenta logicaVenta =
             new LogicaVenta(datosVenta, datosMedicamento);
 
@@ -190,12 +195,11 @@ public class VentanaPrincipal extends JFrame {
         );
 
         panelContenido.add(
-                crearPanelVacio(
-                        "Medicamentos",
-                        "Administracion del inventario de medicamentos."
-                ),
-                "Medicamentos"
-        );
+            new VentanaMedicamentos(
+                logicaMedicamento,
+                logicaCategoria,
+                logicaProveedor),
+            "Medicamentos");
 
         // Categorias utiliza la logica compartida
         panelContenido.add(
@@ -209,10 +213,9 @@ public class VentanaPrincipal extends JFrame {
                 "Clientes"
         );
 
-        panelContenido.add(
-                new VentanaProveedores(),
-                "Proveedores"
-        );
+       panelContenido.add(
+            new VentanaProveedores(logicaProveedor),
+            "Proveedores");
 
         // Ventas recibe las mismas instancias compartidas
         panelContenido.add(

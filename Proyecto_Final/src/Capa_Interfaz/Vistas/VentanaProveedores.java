@@ -49,17 +49,22 @@ public class VentanaProveedores extends JPanel {
     // Comunicación con la capa lógica
     private final LogicaProveedor logicaProveedor;
 
-    public VentanaProveedores() {
-        logicaProveedor = new LogicaProveedor();
+  public VentanaProveedores() {
+    this(new LogicaProveedor());
+}
 
-        setLayout(new BorderLayout(0, 20));
-        setBackground(FONDO);
-        setBorder(BorderFactory.createEmptyBorder(30, 35, 30, 35));
+public VentanaProveedores(LogicaProveedor logicaProveedor) {
 
-        crearEncabezado();
-        crearContenido();
-        actualizarTabla();
-    }
+    this.logicaProveedor = logicaProveedor;
+
+    setLayout(new BorderLayout(0, 20));
+    setBackground(FONDO);
+    setBorder(BorderFactory.createEmptyBorder(30, 35, 30, 35));
+
+    crearEncabezado();
+    crearContenido();
+    actualizarTabla();
+}
 
     // Crea el encabezado de la sección
     private void crearEncabezado() {
