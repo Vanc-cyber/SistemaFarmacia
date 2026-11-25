@@ -40,9 +40,15 @@ public class VentanaCategorias extends JPanel {
     // Comunicación con la capa lógica
     private final LogicaCategoria logicaCategoria;
 
+    // Usa su propia lógica (solo para pruebas aisladas)
     public VentanaCategorias() {
+        this(new LogicaCategoria());
+    }
 
-        logicaCategoria = new LogicaCategoria();
+    // Recibe la lógica compartida con las demás ventanas
+    public VentanaCategorias(LogicaCategoria logicaCategoria) {
+
+        this.logicaCategoria = logicaCategoria;
 
         setLayout(new BorderLayout(0, 20));
         setBackground(FONDO);
@@ -222,19 +228,12 @@ public class VentanaCategorias extends JPanel {
         return scroll;
     }
 
-    // Convierte el texto del identificador a número entero
+    // Convierte el texto del identificador a número entero.
+    // Solo convierte el tipo de dato, las reglas las valida la capa lógica.
     private int leerId(String texto) {
 
-        texto = texto.trim();
-
-        if (texto.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Debe ingresar el identificador de la categoria."
-            );
-        }
-
         try {
-            return Integer.parseInt(texto);
+            return Integer.parseInt(texto.trim());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(
                     "El identificador debe ser un numero entero."
@@ -242,7 +241,7 @@ public class VentanaCategorias extends JPanel {
         }
     }
 
-    // Carga los datos de la categoría seleccionada
+    // Carga los datos de la categoría seleccionada en la tabla
     private void cargarCategoriaSeleccionada() {
 
         try {
@@ -335,9 +334,8 @@ public class VentanaCategorias extends JPanel {
                 return;
             }
 
-            int id = leerId(texto);
-
-            Categoria categoria = logicaCategoria.buscarCategoria(id);
+            Categoria categoria =
+                    logicaCategoria.buscarCategoria(leerId(texto));
 
             if (categoria == null) {
                 throw new IllegalArgumentException(
@@ -491,14 +489,15 @@ public class VentanaCategorias extends JPanel {
         }
     }
 
-    // Obtiene los datos del formulario y crea la categoría
+    // Crea la categoría con los datos del formulario
+    // (la capa lógica se encarga de validarlos)
     private Categoria crearCategoria() {
 
         Categoria categoria = new Categoria();
 
         categoria.setIdCategoria(leerId(txtId.getText()));
-        categoria.setNombre(txtNombre.getText().trim());
-        categoria.setDescripcion(txtDescripcion.getText().trim());
+        categoria.setNombre(txtNombre.getText());
+        categoria.setDescripcion(txtDescripcion.getText());
 
         return categoria;
     }

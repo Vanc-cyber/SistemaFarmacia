@@ -4,6 +4,7 @@ import Capa_Datos.DatosCliente;
 import Capa_Datos.DatosMedicamento;
 import Capa_Datos.DatosVenta;
 
+import Capa_LogicaNegocio.LogicaCategoria;
 import Capa_LogicaNegocio.LogicaCliente;
 import Capa_LogicaNegocio.LogicaMedicamento;
 import Capa_LogicaNegocio.LogicaVenta;
@@ -52,6 +53,9 @@ public class VentanaPrincipal extends JFrame {
 
     private final LogicaVenta logicaVenta =
             new LogicaVenta(datosVenta, datosMedicamento);
+
+    private final LogicaCategoria logicaCategoria =
+            new LogicaCategoria();
 
     public VentanaPrincipal() {
 
@@ -152,6 +156,7 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel encabezado = new JPanel(new BorderLayout());
         encabezado.setBackground(Color.WHITE);
+
         encabezado.setBorder(
                 BorderFactory.createEmptyBorder(18, 30, 18, 30)
         );
@@ -192,8 +197,9 @@ public class VentanaPrincipal extends JFrame {
                 "Medicamentos"
         );
 
+        // Categorias utiliza la logica compartida
         panelContenido.add(
-                new VentanaCategorias(),
+                new VentanaCategorias(logicaCategoria),
                 "Categorias"
         );
 
@@ -226,14 +232,17 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel panel = new JPanel(new BorderLayout(15, 20));
         panel.setBackground(FONDO);
+
         panel.setBorder(
                 BorderFactory.createEmptyBorder(30, 35, 30, 35)
         );
 
         JPanel encabezado = new JPanel();
+
         encabezado.setLayout(
                 new BoxLayout(encabezado, BoxLayout.Y_AXIS)
         );
+
         encabezado.setBackground(FONDO);
 
         JLabel titulo = new JLabel("Panel principal");
@@ -244,7 +253,10 @@ public class VentanaPrincipal extends JFrame {
                 "Bienvenido al sistema de gestion de farmacia."
         );
 
-        descripcion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        descripcion.setFont(
+                new Font("Segoe UI", Font.PLAIN, 14)
+        );
+
         descripcion.setForeground(Color.GRAY);
 
         encabezado.add(titulo);
@@ -314,11 +326,26 @@ public class VentanaPrincipal extends JFrame {
                 new JPanel(new BorderLayout(0, 25));
 
         centro.setBackground(FONDO);
-        centro.add(encabezado, BorderLayout.NORTH);
-        centro.add(estadisticas, BorderLayout.CENTER);
 
-        panel.add(centro, BorderLayout.NORTH);
-        panel.add(informacion, BorderLayout.CENTER);
+        centro.add(
+                encabezado,
+                BorderLayout.NORTH
+        );
+
+        centro.add(
+                estadisticas,
+                BorderLayout.CENTER
+        );
+
+        panel.add(
+                centro,
+                BorderLayout.NORTH
+        );
+
+        panel.add(
+                informacion,
+                BorderLayout.CENTER
+        );
 
         return panel;
     }
@@ -332,7 +359,10 @@ public class VentanaPrincipal extends JFrame {
         JPanel tarjeta = new JPanel();
 
         tarjeta.setLayout(
-                new BoxLayout(tarjeta, BoxLayout.Y_AXIS)
+                new BoxLayout(
+                        tarjeta,
+                        BoxLayout.Y_AXIS
+                )
         );
 
         tarjeta.setBackground(Color.WHITE);
@@ -349,15 +379,28 @@ public class VentanaPrincipal extends JFrame {
         );
 
         JLabel nombre = new JLabel(titulo);
+
         nombre.setFont(
-                new Font("Segoe UI", Font.BOLD, 18)
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        18
+                )
         );
+
         nombre.setForeground(TEXTO);
 
-        JLabel detalle = new JLabel(descripcion);
+        JLabel detalle =
+                new JLabel(descripcion);
+
         detalle.setFont(
-                new Font("Segoe UI", Font.PLAIN, 13)
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
         );
+
         detalle.setForeground(Color.GRAY);
 
         tarjeta.add(nombre);
@@ -401,22 +444,39 @@ public class VentanaPrincipal extends JFrame {
         );
 
         JLabel nombre = new JLabel(titulo);
+
         nombre.setFont(
-                new Font("Segoe UI", Font.BOLD, 26)
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        26
+                )
         );
+
         nombre.setForeground(TEXTO);
 
-        JLabel texto = new JLabel(descripcion);
+        JLabel texto =
+                new JLabel(descripcion);
+
         texto.setFont(
-                new Font("Segoe UI", Font.PLAIN, 14)
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        14
+                )
         );
+
         texto.setForeground(Color.GRAY);
 
         JLabel estado =
                 new JLabel("Modulo en desarrollo");
 
         estado.setFont(
-                new Font("Segoe UI", Font.BOLD, 13)
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        13
+                )
         );
 
         estado.setForeground(AZUL_ACENTO);
