@@ -28,114 +28,279 @@ public class VentanaCategorias extends JPanel {
     private final Color AZUL_ACENTO = new Color(45, 145, 190);
     private final Color AZUL_OSCURO = new Color(23, 37, 58);
 
-    // Campos para ingresar los datos de la categoría
+    // Campos para ingresar los datos de la categoria
     private JTextField txtId;
     private JTextField txtNombre;
     private JTextField txtDescripcion;
 
-    // Componentes para mostrar las categorías registradas
+    // Componentes para mostrar las categorias registradas
     private JTable tablaCategorias;
     private DefaultTableModel modeloTabla;
 
-    // Comunicación con la capa lógica
+    // Comunicacion con la capa logica
     private final LogicaCategoria logicaCategoria;
 
-    // Usa su propia lógica (solo para pruebas aisladas)
+    // Usa su propia logica para pruebas aisladas
     public VentanaCategorias() {
+
         this(new LogicaCategoria());
     }
 
-    // Recibe la lógica compartida con las demás ventanas
-    public VentanaCategorias(LogicaCategoria logicaCategoria) {
+    // Recibe la logica compartida con las demas ventanas
+    public VentanaCategorias(
+            LogicaCategoria logicaCategoria) {
+
+        if (logicaCategoria == null) {
+
+            throw new IllegalArgumentException(
+                    "LogicaCategoria es obligatoria."
+            );
+        }
 
         this.logicaCategoria = logicaCategoria;
 
-        setLayout(new BorderLayout(0, 20));
+        setLayout(
+                new BorderLayout(
+                        0, 20
+                )
+        );
+
         setBackground(FONDO);
-        setBorder(BorderFactory.createEmptyBorder(30, 35, 30, 35));
+
+        setBorder(
+                BorderFactory.createEmptyBorder(
+                        30, 35, 30, 35
+                )
+        );
 
         crearEncabezado();
         crearContenido();
         actualizarTabla();
     }
 
-    // Crea el encabezado de la sección
+    // Crea el encabezado de la seccion
     private void crearEncabezado() {
 
-        JPanel encabezado = new JPanel(new GridLayout(2, 1, 0, 5));
+        JPanel encabezado =
+                new JPanel(
+                        new GridLayout(
+                                2, 1, 0, 5
+                        )
+                );
+
         encabezado.setBackground(FONDO);
 
-        JLabel titulo = new JLabel("Categorias");
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 27));
+        JLabel titulo =
+                new JLabel(
+                        "Categorias"
+                );
+
+        titulo.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        27
+                )
+        );
+
         titulo.setForeground(TEXTO);
 
-        JLabel descripcion = new JLabel("Administracion de categorias");
-        descripcion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        descripcion.setForeground(Color.GRAY);
+        JLabel descripcion =
+                new JLabel(
+                        "Administracion de categorias"
+                );
+
+        descripcion.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        14
+                )
+        );
+
+        descripcion.setForeground(
+                Color.GRAY
+        );
 
         encabezado.add(titulo);
         encabezado.add(descripcion);
 
-        add(encabezado, BorderLayout.NORTH);
+        add(
+                encabezado,
+                BorderLayout.NORTH
+        );
     }
 
     // Organiza el formulario y la tabla
     private void crearContenido() {
 
-        JPanel contenido = new JPanel(new BorderLayout(0, 20));
+        JPanel contenido =
+                new JPanel(
+                        new BorderLayout(
+                                0, 20
+                        )
+                );
+
         contenido.setBackground(FONDO);
 
-        contenido.add(crearFormulario(), BorderLayout.NORTH);
-        contenido.add(crearTabla(), BorderLayout.CENTER);
+        contenido.add(
+                crearFormulario(),
+                BorderLayout.NORTH
+        );
 
-        add(contenido, BorderLayout.CENTER);
+        contenido.add(
+                crearTabla(),
+                BorderLayout.CENTER
+        );
+
+        add(
+                contenido,
+                BorderLayout.CENTER
+        );
     }
 
     // Crea los campos del formulario
     private JPanel crearFormulario() {
 
-        JPanel panel = new JPanel(new BorderLayout(0, 15));
-        panel.setBackground(Color.WHITE);
+        JPanel panel =
+                new JPanel(
+                        new BorderLayout(
+                                0, 15
+                        )
+                );
+
+        panel.setBackground(
+                Color.WHITE
+        );
 
         panel.setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(225, 230, 237)),
-                        BorderFactory.createEmptyBorder(20, 25, 20, 25)
+                        BorderFactory.createLineBorder(
+                                new Color(
+                                        225,
+                                        230,
+                                        237
+                                )
+                        ),
+                        BorderFactory.createEmptyBorder(
+                                20,
+                                25,
+                                20,
+                                25
+                        )
                 )
         );
 
-        JPanel campos = new JPanel(new GridLayout(1, 3, 15, 12));
-        campos.setBackground(Color.WHITE);
+        JPanel campos =
+                new JPanel(
+                        new GridLayout(
+                                1, 3, 15, 12
+                        )
+                );
 
-        txtId = new JTextField();
-        txtNombre = new JTextField();
-        txtDescripcion = new JTextField();
+        campos.setBackground(
+                Color.WHITE
+        );
 
-        campos.add(crearCampo("Identificador", txtId));
-        campos.add(crearCampo("Nombre", txtNombre));
-        campos.add(crearCampo("Descripcion", txtDescripcion));
+        txtId =
+                new JTextField();
 
-        panel.add(campos, BorderLayout.CENTER);
-        panel.add(crearBotones(), BorderLayout.SOUTH);
+        txtNombre =
+                new JTextField();
+
+        txtDescripcion =
+                new JTextField();
+
+        campos.add(
+                crearCampo(
+                        "Identificador",
+                        txtId
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Nombre",
+                        txtNombre
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Descripcion",
+                        txtDescripcion
+                )
+        );
+
+        panel.add(
+                campos,
+                BorderLayout.CENTER
+        );
+
+        panel.add(
+                crearBotones(),
+                BorderLayout.SOUTH
+        );
 
         return panel;
     }
 
     // Crea cada campo con su etiqueta
-    private JPanel crearCampo(String texto, JTextField campo) {
+    private JPanel crearCampo(
+            String texto,
+            JTextField campo) {
 
-        JPanel panel = new JPanel(new BorderLayout(0, 5));
-        panel.setBackground(Color.WHITE);
+        JPanel panel =
+                new JPanel(
+                        new BorderLayout(
+                                0, 5
+                        )
+                );
 
-        JLabel etiqueta = new JLabel(texto);
-        etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        etiqueta.setForeground(TEXTO);
+        panel.setBackground(
+                Color.WHITE
+        );
 
-        campo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        campo.setPreferredSize(new Dimension(150, 30));
+        JLabel etiqueta =
+                new JLabel(
+                        texto
+                );
 
-        panel.add(etiqueta, BorderLayout.NORTH);
-        panel.add(campo, BorderLayout.CENTER);
+        etiqueta.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
+        etiqueta.setForeground(
+                TEXTO
+        );
+
+        campo.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
+        campo.setPreferredSize(
+                new Dimension(
+                        150, 30
+                )
+        );
+
+        panel.add(
+                etiqueta,
+                BorderLayout.NORTH
+        );
+
+        panel.add(
+                campo,
+                BorderLayout.CENTER
+        );
 
         return panel;
     }
@@ -143,20 +308,63 @@ public class VentanaCategorias extends JPanel {
     // Crea los botones y asigna sus eventos
     private JPanel crearBotones() {
 
-        JPanel botones = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        botones.setBackground(Color.WHITE);
+        JPanel botones =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.LEFT,
+                                10,
+                                0
+                        )
+                );
 
-        JButton btnRegistrar = crearBoton("Registrar");
-        JButton btnBuscar = crearBoton("Buscar");
-        JButton btnModificar = crearBoton("Modificar");
-        JButton btnEliminar = crearBoton("Eliminar");
-        JButton btnLimpiar = crearBoton("Limpiar");
+        botones.setBackground(
+                Color.WHITE
+        );
 
-        btnRegistrar.addActionListener(e -> registrarCategoria());
-        btnBuscar.addActionListener(e -> buscarCategoria());
-        btnModificar.addActionListener(e -> modificarCategoria());
-        btnEliminar.addActionListener(e -> eliminarCategoria());
-        btnLimpiar.addActionListener(e -> limpiarCampos());
+        JButton btnRegistrar =
+                crearBoton(
+                        "Registrar"
+                );
+
+        JButton btnBuscar =
+                crearBoton(
+                        "Buscar"
+                );
+
+        JButton btnModificar =
+                crearBoton(
+                        "Modificar"
+                );
+
+        JButton btnEliminar =
+                crearBoton(
+                        "Eliminar"
+                );
+
+        JButton btnLimpiar =
+                crearBoton(
+                        "Limpiar"
+                );
+
+        btnRegistrar.addActionListener(
+                e -> registrarCategoria()
+        );
+
+        btnBuscar.addActionListener(
+                e -> buscarCategoria()
+        );
+
+        btnModificar.addActionListener(
+                e -> modificarCategoria()
+        );
+
+        btnEliminar.addActionListener(
+                e -> eliminarCategoria()
+        );
+
+        btnLimpiar.addActionListener(
+                e -> limpiarCampos()
+        );
 
         botones.add(btnRegistrar);
         botones.add(btnBuscar);
@@ -168,100 +376,204 @@ public class VentanaCategorias extends JPanel {
     }
 
     // Aplica el mismo diseño a los botones
-    private JButton crearBoton(String texto) {
+    private JButton crearBoton(
+            String texto) {
 
-        JButton boton = new JButton(texto);
+        JButton boton =
+                new JButton(
+                        texto
+                );
 
-        boton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        boton.setForeground(Color.WHITE);
-        boton.setBackground(AZUL_ACENTO);
-        boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createEmptyBorder(9, 18, 9, 18));
+        boton.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
+        boton.setForeground(
+                Color.WHITE
+        );
+
+        boton.setBackground(
+                AZUL_ACENTO
+        );
+
+        boton.setFocusPainted(
+                false
+        );
+
+        boton.setBorder(
+                BorderFactory.createEmptyBorder(
+                        9, 18, 9, 18
+                )
+        );
+
         boton.setOpaque(true);
-        boton.setContentAreaFilled(true);
+
+        boton.setContentAreaFilled(
+                true
+        );
 
         return boton;
     }
 
-    // Crea la tabla de categorías
+    // Crea la tabla de categorias
     private JScrollPane crearTabla() {
 
-        String[] columnas = {"Identificador", "Nombre", "Descripcion"};
+        String[] columnas = {
+            "Identificador",
+            "Nombre",
+            "Descripcion"
+        };
 
-        modeloTabla = new DefaultTableModel(columnas, 0) {
+        modeloTabla =
+                new DefaultTableModel(
+                        columnas,
+                        0
+                ) {
 
             @Override
-            public boolean isCellEditable(int fila, int columna) {
+            public boolean isCellEditable(
+                    int fila,
+                    int columna) {
+
                 return false;
             }
         };
 
-        tablaCategorias = new JTable(modeloTabla);
+        tablaCategorias =
+                new JTable(
+                        modeloTabla
+                );
 
-        tablaCategorias.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        tablaCategorias.setRowHeight(28);
-
-        tablaCategorias.getTableHeader().setFont(
-                new Font("Segoe UI", Font.BOLD, 13)
+        tablaCategorias.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
         );
 
-        tablaCategorias.getTableHeader().setBackground(AZUL_OSCURO);
-        tablaCategorias.getTableHeader().setForeground(Color.WHITE);
+        tablaCategorias.setRowHeight(
+                28
+        );
 
-        // Al seleccionar una fila carga los datos de la categoría
-        tablaCategorias.addMouseListener(new java.awt.event.MouseAdapter() {
+        tablaCategorias
+                .getTableHeader()
+                .setFont(
+                        new Font(
+                                "Segoe UI",
+                                Font.BOLD,
+                                13
+                        )
+                );
+
+        tablaCategorias
+                .getTableHeader()
+                .setBackground(
+                        AZUL_OSCURO
+                );
+
+        tablaCategorias
+                .getTableHeader()
+                .setForeground(
+                        Color.WHITE
+                );
+
+        // Al seleccionar una fila carga los datos
+        tablaCategorias.addMouseListener(
+                new java.awt.event.MouseAdapter() {
 
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(
+                    java.awt.event.MouseEvent e) {
+
                 cargarCategoriaSeleccionada();
             }
         });
 
-        JScrollPane scroll = new JScrollPane(tablaCategorias);
+        JScrollPane scroll =
+                new JScrollPane(
+                        tablaCategorias
+                );
 
-        scroll.setPreferredSize(new Dimension(0, 220));
+        scroll.setPreferredSize(
+                new Dimension(
+                        0, 220
+                )
+        );
 
         scroll.setBorder(
-                BorderFactory.createLineBorder(new Color(225, 230, 237))
+                BorderFactory.createLineBorder(
+                        new Color(
+                                225,
+                                230,
+                                237
+                        )
+                )
         );
 
         return scroll;
     }
 
-    // Convierte el texto del identificador a número entero.
-    // Solo convierte el tipo de dato, las reglas las valida la capa lógica.
-    private int leerId(String texto) {
+    // Convierte el identificador a numero entero
+    private int leerId(
+            String texto) {
 
         try {
-            return Integer.parseInt(texto.trim());
+
+            return Integer.parseInt(
+                    texto.trim()
+            );
+
         } catch (NumberFormatException e) {
+
             throw new IllegalArgumentException(
                     "El identificador debe ser un numero entero."
             );
         }
     }
 
-    // Carga los datos de la categoría seleccionada en la tabla
+    // Carga la categoria seleccionada en el formulario
     private void cargarCategoriaSeleccionada() {
 
         try {
 
-            int fila = tablaCategorias.getSelectedRow();
+            int fila =
+                    tablaCategorias
+                            .getSelectedRow();
 
             if (fila == -1) {
                 return;
             }
 
-            int id = Integer.parseInt(
-                    tablaCategorias.getValueAt(fila, 0).toString()
-            );
+            int id =
+                    Integer.parseInt(
+                            tablaCategorias
+                                    .getValueAt(
+                                            fila,
+                                            0
+                                    )
+                                    .toString()
+                    );
 
-            Categoria categoria = logicaCategoria.buscarCategoria(id);
+            Categoria categoria =
+                    logicaCategoria
+                            .buscarCategoria(
+                                    id
+                            );
 
             if (categoria != null) {
 
-                mostrarCategoria(categoria);
-                txtId.setEditable(false);
+                mostrarCategoria(
+                        categoria
+                );
+
+                txtId.setEditable(
+                        false
+                );
 
                 JOptionPane.showMessageDialog(
                         this,
@@ -275,29 +587,32 @@ public class VentanaCategorias extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+            mostrarError(
+                    e.getMessage()
             );
         }
     }
 
-    // Registra una nueva categoría
+    // Registra una nueva categoria
     private void registrarCategoria() {
 
         try {
 
             if (!txtId.isEditable()) {
+
                 throw new IllegalArgumentException(
-                        "Presione Limpiar antes de registrar una nueva categoria."
+                        "Presione Limpiar antes de registrar "
+                        + "una nueva categoria."
                 );
             }
 
-            Categoria categoria = crearCategoria();
+            Categoria categoria =
+                    crearCategoria();
 
-            logicaCategoria.registrarCategoria(categoria);
+            logicaCategoria
+                    .registrarCategoria(
+                            categoria
+                    );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -309,42 +624,53 @@ public class VentanaCategorias extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+            mostrarError(
+                    e.getMessage()
             );
         }
     }
 
-    // Busca una categoría solicitando su identificador
+    // Busca una categoria por identificador
     private void buscarCategoria() {
 
         try {
 
-            String texto = JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese el identificador de la categoria:",
-                    "Buscar categoria",
-                    JOptionPane.QUESTION_MESSAGE
-            );
+            String texto =
+                    JOptionPane.showInputDialog(
+                            this,
+                            "Ingrese el identificador "
+                            + "de la categoria:",
+                            "Buscar categoria",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
 
             if (texto == null) {
                 return;
             }
 
             Categoria categoria =
-                    logicaCategoria.buscarCategoria(leerId(texto));
+                    logicaCategoria
+                            .buscarCategoria(
+                                    leerId(
+                                            texto
+                                    )
+                            );
 
             if (categoria == null) {
+
                 throw new IllegalArgumentException(
-                        "No existe una categoria registrada con ese identificador."
+                        "No existe una categoria registrada "
+                        + "con ese identificador."
                 );
             }
 
-            mostrarCategoria(categoria);
-            txtId.setEditable(false);
+            mostrarCategoria(
+                    categoria
+            );
+
+            txtId.setEditable(
+                    false
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -357,30 +683,33 @@ public class VentanaCategorias extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+            mostrarError(
+                    e.getMessage()
             );
         }
     }
 
-    // Modifica los datos de la categoría seleccionada
+    // Modifica la categoria seleccionada
     private void modificarCategoria() {
 
         try {
 
             if (txtId.isEditable()) {
+
                 throw new IllegalArgumentException(
                         "Primero debe buscar o seleccionar "
                         + "la categoria que desea modificar."
                 );
             }
 
-            Categoria categoria = crearCategoria();
+            Categoria categoria =
+                    crearCategoria();
 
-            boolean modificada = logicaCategoria.modificarCategoria(categoria);
+            boolean modificada =
+                    logicaCategoria
+                            .modificarCategoria(
+                                    categoria
+                            );
 
             if (modificada) {
 
@@ -394,21 +723,15 @@ public class VentanaCategorias extends JPanel {
 
             } else {
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "No se pudo modificar la categoria.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
+                mostrarError(
+                        "No se pudo modificar la categoria."
                 );
             }
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+            mostrarError(
+                    e.getMessage()
             );
         }
     }
@@ -418,44 +741,64 @@ public class VentanaCategorias extends JPanel {
 
         try {
 
-            String texto = JOptionPane.showInputDialog(
-                    this,
-                    "Ingrese el identificador de la categoria que desea eliminar:",
-                    "Eliminar categoria",
-                    JOptionPane.QUESTION_MESSAGE
-            );
+            String texto =
+                    JOptionPane.showInputDialog(
+                            this,
+                            "Ingrese el identificador "
+                            + "de la categoria que desea eliminar:",
+                            "Eliminar categoria",
+                            JOptionPane.QUESTION_MESSAGE
+                    );
 
             if (texto == null) {
                 return;
             }
 
-            int id = leerId(texto);
+            int id =
+                    leerId(
+                            texto
+                    );
 
-            Categoria categoria = logicaCategoria.buscarCategoria(id);
+            Categoria categoria =
+                    logicaCategoria
+                            .buscarCategoria(
+                                    id
+                            );
 
             if (categoria == null) {
+
                 throw new IllegalArgumentException(
-                        "No existe una categoria registrada con ese identificador."
+                        "No existe una categoria registrada "
+                        + "con ese identificador."
                 );
             }
 
             String informacion =
-                    "¿Está seguro de eliminar esta categoría?\n\n"
-                    + "Identificador: " + categoria.getIdCategoria() + "\n"
-                    + "Nombre: " + categoria.getNombre() + "\n"
-                    + "Descripción: " + categoria.getDescripcion();
+                    "¿Esta seguro de eliminar esta categoria?\n\n"
+                    + "Identificador: "
+                    + categoria.getIdCategoria()
+                    + "\nNombre: "
+                    + categoria.getNombre()
+                    + "\nDescripcion: "
+                    + categoria.getDescripcion();
 
-            int respuesta = JOptionPane.showConfirmDialog(
-                    this,
-                    informacion,
-                    "Confirmar eliminación",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
+            int respuesta =
+                    JOptionPane.showConfirmDialog(
+                            this,
+                            informacion,
+                            "Confirmar eliminacion",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                    );
 
-            if (respuesta == JOptionPane.YES_OPTION) {
+            if (respuesta
+                    == JOptionPane.YES_OPTION) {
 
-                boolean eliminada = logicaCategoria.eliminarCategoria(id);
+                boolean eliminada =
+                        logicaCategoria
+                                .eliminarCategoria(
+                                        id
+                                );
 
                 if (eliminada) {
 
@@ -469,73 +812,126 @@ public class VentanaCategorias extends JPanel {
 
                 } else {
 
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "No se pudo eliminar la categoria.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
+                    mostrarError(
+                            "No se pudo eliminar la categoria."
                     );
                 }
             }
 
         } catch (IllegalArgumentException e) {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
+            mostrarError(
+                    e.getMessage()
             );
         }
     }
 
-    // Crea la categoría con los datos del formulario
-    // (la capa lógica se encarga de validarlos)
+    // Crea la categoria y valida que tenga descripcion
     private Categoria crearCategoria() {
 
-        Categoria categoria = new Categoria();
+        String descripcion =
+                txtDescripcion
+                        .getText()
+                        .trim();
 
-        categoria.setIdCategoria(leerId(txtId.getText()));
-        categoria.setNombre(txtNombre.getText());
-        categoria.setDescripcion(txtDescripcion.getText());
+        if (descripcion.isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Debe ingresar una descripcion "
+                    + "para la categoria."
+            );
+        }
+
+        Categoria categoria =
+                new Categoria();
+
+        categoria.setIdCategoria(
+                leerId(
+                        txtId.getText()
+                )
+        );
+
+        categoria.setNombre(
+                txtNombre.getText()
+        );
+
+        categoria.setDescripcion(
+                descripcion
+        );
 
         return categoria;
     }
 
-    // Muestra los datos de una categoría en el formulario
-    private void mostrarCategoria(Categoria categoria) {
+    // Muestra los datos de una categoria
+    private void mostrarCategoria(
+            Categoria categoria) {
 
-        txtId.setText(String.valueOf(categoria.getIdCategoria()));
-        txtNombre.setText(categoria.getNombre());
-        txtDescripcion.setText(categoria.getDescripcion());
+        txtId.setText(
+                String.valueOf(
+                        categoria
+                                .getIdCategoria()
+                )
+        );
+
+        txtNombre.setText(
+                categoria.getNombre()
+        );
+
+        txtDescripcion.setText(
+                categoria.getDescripcion()
+        );
     }
 
-    // Actualiza la tabla con las categorías registradas
+    // Actualiza la tabla
     private void actualizarTabla() {
 
-        modeloTabla.setRowCount(0);
+        modeloTabla.setRowCount(
+                0
+        );
 
-        for (Categoria categoria : logicaCategoria.listarCategorias()) {
+        for (Categoria categoria
+                : logicaCategoria
+                        .listarCategorias()) {
 
             modeloTabla.addRow(
                     new Object[]{
-                        categoria.getIdCategoria(),
-                        categoria.getNombre(),
-                        categoria.getDescripcion()
+                        categoria
+                                .getIdCategoria(),
+                        categoria
+                                .getNombre(),
+                        categoria
+                                .getDescripcion()
                     }
             );
         }
     }
 
-    // Limpia el formulario para ingresar una nueva categoría
+    // Limpia el formulario
     private void limpiarCampos() {
 
         txtId.setText("");
         txtNombre.setText("");
         txtDescripcion.setText("");
 
-        txtId.setEditable(true);
-        tablaCategorias.clearSelection();
+        txtId.setEditable(
+                true
+        );
+
+        tablaCategorias
+                .clearSelection();
+
         txtId.requestFocus();
+    }
+
+    // Muestra mensajes de error
+    private void mostrarError(
+            String mensaje) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }

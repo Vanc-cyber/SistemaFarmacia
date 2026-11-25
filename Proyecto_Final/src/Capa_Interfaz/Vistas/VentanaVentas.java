@@ -37,14 +37,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class VentanaVentas extends JPanel {
 
-    // Colores utilizados en la interfaz
     private final Color FONDO = new Color(242, 245, 249);
     private final Color TEXTO = new Color(40, 52, 70);
     private final Color AZUL_ACENTO = new Color(45, 145, 190);
     private final Color AZUL_OSCURO = new Color(23, 37, 58);
     private final Color BORDE = new Color(225, 230, 237);
 
-    // Campos del formulario
     private JTextField txtNumeroVenta;
     private JTextField txtFecha;
     private JComboBox<Cliente> cmbCliente;
@@ -54,18 +52,15 @@ public class VentanaVentas extends JPanel {
     private JTextField txtCantidad;
     private JLabel lblTotal;
 
-    // Tabla con los productos de la venta actual
     private JTable tablaDetalle;
     private DefaultTableModel modeloDetalle;
 
-    // Tabla con el historial de ventas registradas
     private JTable tablaVentas;
     private DefaultTableModel modeloVentas;
 
-    // Productos agregados a la venta actual
-    private final ArrayList<DetalleVenta> detallesActuales = new ArrayList<>();
+    private final ArrayList<DetalleVenta> detallesActuales =
+            new ArrayList<>();
 
-    // Lógicas compartidas con las demás ventanas
     private final LogicaCliente logicaCliente;
     private final LogicaMedicamento logicaMedicamento;
     private final LogicaVenta logicaVenta;
@@ -90,7 +85,12 @@ public class VentanaVentas extends JPanel {
 
         setLayout(new BorderLayout(0, 20));
         setBackground(FONDO);
-        setBorder(BorderFactory.createEmptyBorder(30, 35, 30, 35));
+
+        setBorder(
+                BorderFactory.createEmptyBorder(
+                        30, 35, 30, 35
+                )
+        );
 
         crearEncabezado();
         crearContenido();
@@ -100,78 +100,170 @@ public class VentanaVentas extends JPanel {
         actualizarTablaVentas();
         prepararNuevaVenta();
 
-        // Recarga los datos cuando se vuelve a abrir Ventas
-        addComponentListener(new ComponentAdapter() {
+        addComponentListener(
+                new ComponentAdapter() {
+
             @Override
-            public void componentShown(ComponentEvent e) {
-                cargarClientes();
-                cargarMedicamentos();
-                actualizarTablaVentas();
+            public void componentShown(
+                    ComponentEvent e) {
+
+                actualizarDatos();
             }
         });
     }
 
-    // Crea el encabezado
+    // Recarga la información de los demás módulos
+    public void actualizarDatos() {
+
+        cargarClientes();
+        cargarMedicamentos();
+        actualizarTablaVentas();
+    }
+
     private void crearEncabezado() {
 
-        JPanel encabezado = new JPanel(new GridLayout(2, 1, 0, 5));
+        JPanel encabezado =
+                new JPanel(
+                        new GridLayout(
+                                2, 1, 0, 5
+                        )
+                );
+
         encabezado.setBackground(FONDO);
 
-        JLabel titulo = new JLabel("Ventas");
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 27));
+        JLabel titulo =
+                new JLabel("Ventas");
+
+        titulo.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        27
+                )
+        );
+
         titulo.setForeground(TEXTO);
 
-        JLabel descripcion = new JLabel("Registro y consulta de ventas");
-        descripcion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        JLabel descripcion =
+                new JLabel(
+                        "Registro y consulta de ventas"
+                );
+
+        descripcion.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        14
+                )
+        );
+
         descripcion.setForeground(Color.GRAY);
 
         encabezado.add(titulo);
         encabezado.add(descripcion);
 
-        add(encabezado, BorderLayout.NORTH);
+        add(
+                encabezado,
+                BorderLayout.NORTH
+        );
     }
 
-    // Organiza el formulario y las tablas
     private void crearContenido() {
 
-        JPanel contenido = new JPanel(new BorderLayout(0, 15));
+        JPanel contenido =
+                new JPanel(
+                        new BorderLayout(
+                                0, 15
+                        )
+                );
+
         contenido.setBackground(FONDO);
 
-        JPanel centro = new JPanel(new GridLayout(2, 1, 0, 15));
+        JPanel centro =
+                new JPanel(
+                        new GridLayout(
+                                2, 1, 0, 15
+                        )
+                );
+
         centro.setBackground(FONDO);
 
-        centro.add(crearPanelDetalle());
-        centro.add(crearPanelHistorial());
+        centro.add(
+                crearPanelDetalle()
+        );
 
-        contenido.add(crearFormulario(), BorderLayout.NORTH);
-        contenido.add(centro, BorderLayout.CENTER);
+        centro.add(
+                crearPanelHistorial()
+        );
 
-        add(contenido, BorderLayout.CENTER);
+        contenido.add(
+                crearFormulario(),
+                BorderLayout.NORTH
+        );
+
+        contenido.add(
+                centro,
+                BorderLayout.CENTER
+        );
+
+        add(
+                contenido,
+                BorderLayout.CENTER
+        );
     }
 
-    // Formulario para crear la venta
     private JPanel crearFormulario() {
 
-        JPanel panel = new JPanel(new BorderLayout(0, 15));
+        JPanel panel =
+                new JPanel(
+                        new BorderLayout(
+                                0, 15
+                        )
+                );
+
         panel.setBackground(Color.WHITE);
 
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(BORDE),
-                BorderFactory.createEmptyBorder(20, 25, 20, 25)
-        ));
+        panel.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(
+                                BORDE
+                        ),
+                        BorderFactory.createEmptyBorder(
+                                20, 25, 20, 25
+                        )
+                )
+        );
 
-        JPanel campos = new JPanel(new GridLayout(2, 4, 15, 12));
+        JPanel campos =
+                new JPanel(
+                        new GridLayout(
+                                2, 4, 15, 12
+                        )
+                );
+
         campos.setBackground(Color.WHITE);
 
-        txtNumeroVenta = crearCampoSoloLectura();
-        txtFecha = crearCampoSoloLectura();
-        txtPrecio = crearCampoSoloLectura();
-        txtDisponible = crearCampoSoloLectura();
-        txtCantidad = new JTextField();
+        txtNumeroVenta =
+                crearCampoSoloLectura();
 
-        cmbCliente = new JComboBox<>();
+        txtFecha =
+                crearCampoSoloLectura();
 
-        cmbCliente.setRenderer(new DefaultListCellRenderer() {
+        txtPrecio =
+                crearCampoSoloLectura();
+
+        txtDisponible =
+                crearCampoSoloLectura();
+
+        txtCantidad =
+                new JTextField();
+
+        cmbCliente =
+                new JComboBox<>();
+
+        cmbCliente.setRenderer(
+                new DefaultListCellRenderer() {
+
             @Override
             public Component getListCellRendererComponent(
                     JList<?> lista,
@@ -190,7 +282,8 @@ public class VentanaVentas extends JPanel {
 
                 if (valor instanceof Cliente) {
 
-                    Cliente cliente = (Cliente) valor;
+                    Cliente cliente =
+                            (Cliente) valor;
 
                     setText(
                             cliente.getIdentificacion()
@@ -201,16 +294,22 @@ public class VentanaVentas extends JPanel {
                     );
 
                 } else {
-                    setText("Seleccione un cliente");
+
+                    setText(
+                            "Seleccione un cliente"
+                    );
                 }
 
                 return this;
             }
         });
 
-        cmbMedicamento = new JComboBox<>();
+        cmbMedicamento =
+                new JComboBox<>();
 
-        cmbMedicamento.setRenderer(new DefaultListCellRenderer() {
+        cmbMedicamento.setRenderer(
+                new DefaultListCellRenderer() {
+
             @Override
             public Component getListCellRendererComponent(
                     JList<?> lista,
@@ -229,7 +328,8 @@ public class VentanaVentas extends JPanel {
 
                 if (valor instanceof Medicamento) {
 
-                    Medicamento medicamento = (Medicamento) valor;
+                    Medicamento medicamento =
+                            (Medicamento) valor;
 
                     setText(
                             medicamento.getIdMedicamento()
@@ -238,7 +338,10 @@ public class VentanaVentas extends JPanel {
                     );
 
                 } else {
-                    setText("Seleccione un medicamento");
+
+                    setText(
+                            "Seleccione un medicamento"
+                    );
                 }
 
                 return this;
@@ -249,28 +352,79 @@ public class VentanaVentas extends JPanel {
                 e -> mostrarDatosMedicamento()
         );
 
-        campos.add(crearCampo("Numero de venta", txtNumeroVenta));
-        campos.add(crearCampo("Fecha", txtFecha));
-        campos.add(crearCampo("Cliente", cmbCliente));
-        campos.add(crearCampo("Medicamento", cmbMedicamento));
-        campos.add(crearCampo("Precio unitario", txtPrecio));
-        campos.add(crearCampo("Cantidad disponible", txtDisponible));
-        campos.add(crearCampo("Cantidad a vender", txtCantidad));
+        campos.add(
+                crearCampo(
+                        "Numero de venta",
+                        txtNumeroVenta
+                )
+        );
 
-        JPanel espacio = new JPanel();
+        campos.add(
+                crearCampo(
+                        "Fecha",
+                        txtFecha
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Cliente",
+                        cmbCliente
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Medicamento",
+                        cmbMedicamento
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Precio unitario",
+                        txtPrecio
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Cantidad disponible",
+                        txtDisponible
+                )
+        );
+
+        campos.add(
+                crearCampo(
+                        "Cantidad a vender",
+                        txtCantidad
+                )
+        );
+
+        JPanel espacio =
+                new JPanel();
+
         espacio.setBackground(Color.WHITE);
 
         campos.add(espacio);
 
-        panel.add(campos, BorderLayout.CENTER);
-        panel.add(crearBotones(), BorderLayout.SOUTH);
+        panel.add(
+                campos,
+                BorderLayout.CENTER
+        );
+
+        panel.add(
+                crearBotones(),
+                BorderLayout.SOUTH
+        );
 
         return panel;
     }
 
     private JTextField crearCampoSoloLectura() {
 
-        JTextField campo = new JTextField();
+        JTextField campo =
+                new JTextField();
 
         campo.setEditable(false);
         campo.setBackground(FONDO);
@@ -278,45 +432,116 @@ public class VentanaVentas extends JPanel {
         return campo;
     }
 
-    // Crea cada campo con su etiqueta
-    private JPanel crearCampo(String texto, Component campo) {
+    private JPanel crearCampo(
+            String texto,
+            Component campo) {
 
-        JPanel panel = new JPanel(new BorderLayout(0, 5));
+        JPanel panel =
+                new JPanel(
+                        new BorderLayout(
+                                0, 5
+                        )
+                );
+
         panel.setBackground(Color.WHITE);
 
-        JLabel etiqueta = new JLabel(texto);
-        etiqueta.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        JLabel etiqueta =
+                new JLabel(texto);
+
+        etiqueta.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
         etiqueta.setForeground(TEXTO);
 
-        campo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        campo.setPreferredSize(new Dimension(150, 30));
+        campo.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
 
-        panel.add(etiqueta, BorderLayout.NORTH);
-        panel.add(campo, BorderLayout.CENTER);
+        campo.setPreferredSize(
+                new Dimension(
+                        150, 30
+                )
+        );
+
+        panel.add(
+                etiqueta,
+                BorderLayout.NORTH
+        );
+
+        panel.add(
+                campo,
+                BorderLayout.CENTER
+        );
 
         return panel;
     }
 
-    // Crea los botones y sus eventos
     private JPanel crearBotones() {
 
-        JPanel botones = new JPanel(
-                new FlowLayout(FlowLayout.LEFT, 10, 0)
-        );
+        JPanel botones =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.LEFT,
+                                10,
+                                0
+                        )
+                );
 
         botones.setBackground(Color.WHITE);
 
-        JButton btnAgregar = crearBoton("Agregar producto");
-        JButton btnQuitar = crearBoton("Quitar producto");
-        JButton btnRegistrar = crearBoton("Registrar venta");
-        JButton btnBuscar = crearBoton("Buscar venta");
-        JButton btnLimpiar = crearBoton("Limpiar");
+        JButton btnAgregar =
+                crearBoton(
+                        "Agregar producto"
+                );
 
-        btnAgregar.addActionListener(e -> agregarProducto());
-        btnQuitar.addActionListener(e -> quitarProducto());
-        btnRegistrar.addActionListener(e -> registrarVenta());
-        btnBuscar.addActionListener(e -> buscarVenta());
-        btnLimpiar.addActionListener(e -> prepararNuevaVenta());
+        JButton btnQuitar =
+                crearBoton(
+                        "Quitar producto"
+                );
+
+        JButton btnRegistrar =
+                crearBoton(
+                        "Registrar venta"
+                );
+
+        JButton btnBuscar =
+                crearBoton(
+                        "Buscar venta"
+                );
+
+        JButton btnLimpiar =
+                crearBoton(
+                        "Limpiar"
+                );
+
+        btnAgregar.addActionListener(
+                e -> agregarProducto()
+        );
+
+        btnQuitar.addActionListener(
+                e -> quitarProducto()
+        );
+
+        btnRegistrar.addActionListener(
+                e -> registrarVenta()
+        );
+
+        btnBuscar.addActionListener(
+                e -> buscarVenta()
+        );
+
+        btnLimpiar.addActionListener(
+                e -> prepararNuevaVenta()
+        );
 
         botones.add(btnAgregar);
         botones.add(btnQuitar);
@@ -327,22 +552,36 @@ public class VentanaVentas extends JPanel {
         return botones;
     }
 
-    private JButton crearBoton(String texto) {
+    private JButton crearBoton(
+            String texto) {
 
-        JButton boton = new JButton(texto);
+        JButton boton =
+                new JButton(texto);
 
-        boton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        boton.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
         boton.setForeground(Color.WHITE);
         boton.setBackground(AZUL_ACENTO);
         boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createEmptyBorder(9, 18, 9, 18));
+
+        boton.setBorder(
+                BorderFactory.createEmptyBorder(
+                        9, 18, 9, 18
+                )
+        );
+
         boton.setOpaque(true);
         boton.setContentAreaFilled(true);
 
         return boton;
     }
 
-    // Tabla de productos de la venta actual
     private JPanel crearPanelDetalle() {
 
         String[] columnas = {
@@ -353,22 +592,40 @@ public class VentanaVentas extends JPanel {
             "Subtotal"
         };
 
-        modeloDetalle = crearModelo(columnas);
-        tablaDetalle = crearTabla(modeloDetalle);
+        modeloDetalle =
+                crearModelo(
+                        columnas
+                );
 
-        lblTotal = new JLabel(
-                "Total: " + formatoMoneda(0)
-        );
+        tablaDetalle =
+                crearTabla(
+                        modeloDetalle
+                );
+
+        lblTotal =
+                new JLabel(
+                        "Total: "
+                        + formatoMoneda(0)
+                );
 
         lblTotal.setFont(
-                new Font("Segoe UI", Font.BOLD, 16)
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        16
+                )
         );
 
-        lblTotal.setForeground(AZUL_OSCURO);
-
-        JPanel pie = new JPanel(
-                new FlowLayout(FlowLayout.RIGHT)
+        lblTotal.setForeground(
+                AZUL_OSCURO
         );
+
+        JPanel pie =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.RIGHT
+                        )
+                );
 
         pie.setBackground(FONDO);
         pie.add(lblTotal);
@@ -380,7 +637,6 @@ public class VentanaVentas extends JPanel {
         );
     }
 
-    // Historial de ventas
     private JPanel crearPanelHistorial() {
 
         String[] columnas = {
@@ -391,8 +647,15 @@ public class VentanaVentas extends JPanel {
             "Total"
         };
 
-        modeloVentas = crearModelo(columnas);
-        tablaVentas = crearTabla(modeloVentas);
+        modeloVentas =
+                crearModelo(
+                        columnas
+                );
+
+        tablaVentas =
+                crearTabla(
+                        modeloVentas
+                );
 
         tablaVentas.addMouseListener(
                 new java.awt.event.MouseAdapter() {
@@ -402,13 +665,15 @@ public class VentanaVentas extends JPanel {
                     java.awt.event.MouseEvent e) {
 
                 if (e.getClickCount() == 2) {
+
                     verVentaSeleccionada();
                 }
             }
         });
 
         return crearSeccionTabla(
-                "Ventas registradas (doble clic para ver el detalle)",
+                "Ventas registradas "
+                + "(doble clic para ver el detalle)",
                 tablaVentas,
                 null
         );
@@ -417,7 +682,10 @@ public class VentanaVentas extends JPanel {
     private DefaultTableModel crearModelo(
             String[] columnas) {
 
-        return new DefaultTableModel(columnas, 0) {
+        return new DefaultTableModel(
+                columnas,
+                0
+        ) {
 
             @Override
             public boolean isCellEditable(
@@ -432,20 +700,36 @@ public class VentanaVentas extends JPanel {
     private JTable crearTabla(
             DefaultTableModel modelo) {
 
-        JTable tabla = new JTable(modelo);
+        JTable tabla =
+                new JTable(modelo);
 
         tabla.setFont(
-                new Font("Segoe UI", Font.PLAIN, 13)
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
         );
 
         tabla.setRowHeight(28);
 
         tabla.getTableHeader().setFont(
-                new Font("Segoe UI", Font.BOLD, 13)
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        13
+                )
         );
 
-        tabla.getTableHeader().setBackground(AZUL_OSCURO);
-        tabla.getTableHeader().setForeground(Color.WHITE);
+        tabla.getTableHeader()
+                .setBackground(
+                        AZUL_OSCURO
+                );
+
+        tabla.getTableHeader()
+                .setForeground(
+                        Color.WHITE
+                );
 
         return tabla;
     }
@@ -456,44 +740,70 @@ public class VentanaVentas extends JPanel {
             JPanel pie) {
 
         JPanel seccion =
-                new JPanel(new BorderLayout(0, 8));
+                new JPanel(
+                        new BorderLayout(
+                                0, 8
+                        )
+                );
 
         seccion.setBackground(FONDO);
 
-        JLabel etiqueta = new JLabel(titulo);
+        JLabel etiqueta =
+                new JLabel(titulo);
 
         etiqueta.setFont(
-                new Font("Segoe UI", Font.BOLD, 14)
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        14
+                )
         );
 
         etiqueta.setForeground(TEXTO);
 
         JScrollPane scroll =
-                new JScrollPane(tabla);
+                new JScrollPane(
+                        tabla
+                );
 
         scroll.setPreferredSize(
-                new Dimension(0, 150)
+                new Dimension(
+                        0, 150
+                )
         );
 
         scroll.setBorder(
-                BorderFactory.createLineBorder(BORDE)
+                BorderFactory.createLineBorder(
+                        BORDE
+                )
         );
 
-        seccion.add(etiqueta, BorderLayout.NORTH);
-        seccion.add(scroll, BorderLayout.CENTER);
+        seccion.add(
+                etiqueta,
+                BorderLayout.NORTH
+        );
+
+        seccion.add(
+                scroll,
+                BorderLayout.CENTER
+        );
 
         if (pie != null) {
-            seccion.add(pie, BorderLayout.SOUTH);
+
+            seccion.add(
+                    pie,
+                    BorderLayout.SOUTH
+            );
         }
 
         return seccion;
     }
 
-    // Carga los clientes registrados en la misma instancia compartida
     private void cargarClientes() {
 
-        Object seleccionado =
-                cmbCliente.getSelectedItem();
+        Cliente seleccionado =
+                (Cliente) cmbCliente
+                        .getSelectedItem();
 
         cmbCliente.removeAllItems();
         cmbCliente.addItem(null);
@@ -501,33 +811,55 @@ public class VentanaVentas extends JPanel {
         for (Cliente cliente
                 : logicaCliente.listarClientes()) {
 
-            cmbCliente.addItem(cliente);
+            cmbCliente.addItem(
+                    cliente
+            );
         }
 
-        cmbCliente.setSelectedItem(seleccionado);
+        if (seleccionado != null) {
+
+            cmbCliente.setSelectedItem(
+                    seleccionado
+            );
+
+        } else {
+
+            cmbCliente.setSelectedIndex(0);
+        }
     }
 
-    // Carga los medicamentos registrados
     private void cargarMedicamentos() {
 
-        Object seleccionado =
-                cmbMedicamento.getSelectedItem();
+        Medicamento seleccionado =
+                (Medicamento) cmbMedicamento
+                        .getSelectedItem();
 
         cmbMedicamento.removeAllItems();
         cmbMedicamento.addItem(null);
 
         for (Medicamento medicamento
-                : logicaMedicamento.listarMedicamentos()) {
+                : logicaMedicamento
+                        .listarMedicamentos()) {
 
-            cmbMedicamento.addItem(medicamento);
+            cmbMedicamento.addItem(
+                    medicamento
+            );
         }
 
-        cmbMedicamento.setSelectedItem(seleccionado);
+        if (seleccionado != null) {
+
+            cmbMedicamento.setSelectedItem(
+                    seleccionado
+            );
+
+        } else {
+
+            cmbMedicamento.setSelectedIndex(0);
+        }
 
         mostrarDatosMedicamento();
     }
 
-    // Muestra precio y stock del medicamento
     private void mostrarDatosMedicamento() {
 
         if (txtPrecio == null) {
@@ -535,7 +867,8 @@ public class VentanaVentas extends JPanel {
         }
 
         Medicamento medicamento =
-                (Medicamento) cmbMedicamento.getSelectedItem();
+                (Medicamento) cmbMedicamento
+                        .getSelectedItem();
 
         if (medicamento == null) {
 
@@ -555,19 +888,50 @@ public class VentanaVentas extends JPanel {
                 String.valueOf(
                         Math.max(
                                 0,
-                                medicamento.getCantidadDisponible()
+                                medicamento
+                                        .getCantidadDisponible()
                                 - cantidadEnCarrito(
-                                        medicamento.getIdMedicamento()
+                                        medicamento
+                                                .getIdMedicamento()
                                 )
                         )
                 )
         );
     }
 
-    // Agrega un medicamento a la venta actual
+    /*
+     * Regla de negocio:
+     * debe existir al menos un cliente y un medicamento
+     * registrados antes de realizar una venta.
+     */
+    private void validarRequisitosVenta() {
+
+        if (logicaCliente
+                .listarClientes()
+                .isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Debe registrar al menos un cliente "
+                    + "antes de realizar una venta."
+            );
+        }
+
+        if (logicaMedicamento
+                .listarMedicamentos()
+                .isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Debe registrar al menos un medicamento "
+                    + "antes de realizar una venta."
+            );
+        }
+    }
+
     private void agregarProducto() {
 
         try {
+
+            validarRequisitosVenta();
 
             Medicamento medicamento =
                     (Medicamento) cmbMedicamento
@@ -580,11 +944,29 @@ public class VentanaVentas extends JPanel {
                 );
             }
 
-            int cantidad = leerCantidad();
+            int cantidad =
+                    leerCantidad();
+
+            int disponible =
+                    medicamento
+                            .getCantidadDisponible()
+                    - cantidadEnCarrito(
+                            medicamento
+                                    .getIdMedicamento()
+                    );
+
+            if (cantidad > disponible) {
+
+                throw new IllegalArgumentException(
+                        "La cantidad solicitada supera "
+                        + "el inventario disponible."
+                );
+            }
 
             DetalleVenta existente =
                     buscarDetalle(
-                            medicamento.getIdMedicamento()
+                            medicamento
+                                    .getIdMedicamento()
                     );
 
             if (existente != null) {
@@ -608,7 +990,9 @@ public class VentanaVentas extends JPanel {
 
                 detalle.calcularSubtotal();
 
-                detallesActuales.add(detalle);
+                detallesActuales.add(
+                        detalle
+                );
             }
 
             txtCantidad.setText("");
@@ -618,15 +1002,17 @@ public class VentanaVentas extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            mostrarError(e.getMessage());
+            mostrarError(
+                    e.getMessage()
+            );
         }
     }
 
-    // Quita un medicamento de la venta
     private void quitarProducto() {
 
         int fila =
-                tablaDetalle.getSelectedRow();
+                tablaDetalle
+                        .getSelectedRow();
 
         if (fila == -1) {
 
@@ -638,34 +1024,59 @@ public class VentanaVentas extends JPanel {
             return;
         }
 
-        detallesActuales.remove(fila);
+        detallesActuales.remove(
+                fila
+        );
 
         actualizarTablaDetalle();
         mostrarDatosMedicamento();
     }
 
-    // Registra la venta
     private void registrarVenta() {
 
         try {
+
+            // Primero valida que el sistema tenga datos para vender
+            validarRequisitosVenta();
 
             Cliente cliente =
                     (Cliente) cmbCliente
                             .getSelectedItem();
 
-            Venta venta = new Venta(
-                    Integer.parseInt(
-                            txtNumeroVenta.getText()
-                    ),
-                    new Date(),
-                    cliente,
-                    new ArrayList<>(
-                            detallesActuales
-                    ),
-                    0
-            );
+            // Debe seleccionarse un cliente
+            if (cliente == null) {
 
-            logicaVenta.registrarVenta(venta);
+                throw new IllegalArgumentException(
+                        "Debe seleccionar un cliente."
+                );
+            }
+
+            // Debe agregarse por lo menos un medicamento
+            if (detallesActuales.isEmpty()) {
+
+                throw new IllegalArgumentException(
+                        "Debe agregar al menos un medicamento "
+                        + "a la venta."
+                );
+            }
+
+            Venta venta =
+                    new Venta(
+                            Integer.parseInt(
+                                    txtNumeroVenta
+                                            .getText()
+                            ),
+                            new Date(),
+                            cliente,
+                            new ArrayList<>(
+                                    detallesActuales
+                            ),
+                            0
+                    );
+
+            logicaVenta.registrarVenta(
+                    venta
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -686,11 +1097,12 @@ public class VentanaVentas extends JPanel {
 
         } catch (IllegalArgumentException e) {
 
-            mostrarError(e.getMessage());
+            mostrarError(
+                    e.getMessage()
+            );
         }
     }
 
-    // Busca una venta por numero
     private void buscarVenta() {
 
         try {
@@ -698,7 +1110,8 @@ public class VentanaVentas extends JPanel {
             String texto =
                     JOptionPane.showInputDialog(
                             this,
-                            "Ingrese el numero de la venta:",
+                            "Ingrese el numero "
+                            + "de la venta:",
                             "Buscar venta",
                             JOptionPane.QUESTION_MESSAGE
                     );
@@ -707,13 +1120,23 @@ public class VentanaVentas extends JPanel {
                 return;
             }
 
+            texto = texto.trim();
+
+            if (texto.isEmpty()) {
+
+                throw new IllegalArgumentException(
+                        "Debe ingresar el numero "
+                        + "de la venta."
+                );
+            }
+
             int numero;
 
             try {
 
                 numero =
                         Integer.parseInt(
-                                texto.trim()
+                                texto
                         );
 
             } catch (NumberFormatException e) {
@@ -725,27 +1148,35 @@ public class VentanaVentas extends JPanel {
             }
 
             Venta venta =
-                    logicaVenta.buscarVenta(numero);
+                    logicaVenta.buscarVenta(
+                            numero
+                    );
 
             if (venta == null) {
 
                 throw new IllegalArgumentException(
-                        "No existe una venta con ese numero."
+                        "No existe una venta "
+                        + "con ese numero."
                 );
             }
 
-            mostrarDetalleVenta(venta);
+            mostrarDetalleVenta(
+                    venta
+            );
 
         } catch (IllegalArgumentException e) {
 
-            mostrarError(e.getMessage());
+            mostrarError(
+                    e.getMessage()
+            );
         }
     }
 
     private void verVentaSeleccionada() {
 
         int fila =
-                tablaVentas.getSelectedRow();
+                tablaVentas
+                        .getSelectedRow();
 
         if (fila == -1) {
             return;
@@ -754,19 +1185,26 @@ public class VentanaVentas extends JPanel {
         int numero =
                 Integer.parseInt(
                         tablaVentas
-                                .getValueAt(fila, 0)
+                                .getValueAt(
+                                        fila,
+                                        0
+                                )
                                 .toString()
                 );
 
         Venta venta =
-                logicaVenta.buscarVenta(numero);
+                logicaVenta.buscarVenta(
+                        numero
+                );
 
         if (venta != null) {
-            mostrarDetalleVenta(venta);
+
+            mostrarDetalleVenta(
+                    venta
+            );
         }
     }
 
-    // Muestra el detalle de una venta
     private void mostrarDetalleVenta(
             Venta venta) {
 
@@ -785,27 +1223,37 @@ public class VentanaVentas extends JPanel {
 
             modelo.addRow(
                     new Object[]{
-                        detalle.getMedicamento()
+                        detalle
+                                .getMedicamento()
                                 .getNombre(),
-                        detalle.getCantidad(),
+                        detalle
+                                .getCantidad(),
                         formatoMoneda(
-                                detalle.getPrecioUnitario()
+                                detalle
+                                        .getPrecioUnitario()
                         ),
                         formatoMoneda(
-                                detalle.getSubTotal()
+                                detalle
+                                        .getSubTotal()
                         )
                     }
             );
         }
 
         JTable tabla =
-                crearTabla(modelo);
+                crearTabla(
+                        modelo
+                );
 
         JScrollPane scroll =
-                new JScrollPane(tabla);
+                new JScrollPane(
+                        tabla
+                );
 
         scroll.setPreferredSize(
-                new Dimension(520, 180)
+                new Dimension(
+                        520, 180
+                )
         );
 
         JLabel info =
@@ -837,11 +1285,20 @@ public class VentanaVentas extends JPanel {
 
         JPanel panel =
                 new JPanel(
-                        new BorderLayout(0, 10)
+                        new BorderLayout(
+                                0, 10
+                        )
                 );
 
-        panel.add(info, BorderLayout.NORTH);
-        panel.add(scroll, BorderLayout.CENTER);
+        panel.add(
+                info,
+                BorderLayout.NORTH
+        );
+
+        panel.add(
+                scroll,
+                BorderLayout.CENTER
+        );
 
         JOptionPane.showMessageDialog(
                 this,
@@ -851,7 +1308,6 @@ public class VentanaVentas extends JPanel {
         );
     }
 
-    // Prepara el formulario para una venta nueva
     private void prepararNuevaVenta() {
 
         detallesActuales.clear();
@@ -872,8 +1328,13 @@ public class VentanaVentas extends JPanel {
 
         txtCantidad.setText("");
 
-        cmbCliente.setSelectedItem(null);
-        cmbMedicamento.setSelectedItem(null);
+        if (cmbCliente.getItemCount() > 0) {
+            cmbCliente.setSelectedIndex(0);
+        }
+
+        if (cmbMedicamento.getItemCount() > 0) {
+            cmbMedicamento.setSelectedIndex(0);
+        }
 
         mostrarDatosMedicamento();
     }
@@ -889,21 +1350,27 @@ public class VentanaVentas extends JPanel {
 
             modeloDetalle.addRow(
                     new Object[]{
-                        detalle.getMedicamento()
+                        detalle
+                                .getMedicamento()
                                 .getIdMedicamento(),
-                        detalle.getMedicamento()
+                        detalle
+                                .getMedicamento()
                                 .getNombre(),
-                        detalle.getCantidad(),
+                        detalle
+                                .getCantidad(),
                         formatoMoneda(
-                                detalle.getPrecioUnitario()
+                                detalle
+                                        .getPrecioUnitario()
                         ),
                         formatoMoneda(
-                                detalle.getSubTotal()
+                                detalle
+                                        .getSubTotal()
                         )
                     }
             );
 
-            total += detalle.getSubTotal();
+            total +=
+                    detalle.getSubTotal();
         }
 
         lblTotal.setText(
@@ -912,9 +1379,9 @@ public class VentanaVentas extends JPanel {
         );
 
         lblTotal.revalidate();
+        lblTotal.repaint();
     }
 
-    // Actualiza el historial de ventas
     private void actualizarTablaVentas() {
 
         modeloVentas.setRowCount(0);
@@ -927,7 +1394,8 @@ public class VentanaVentas extends JPanel {
             for (DetalleVenta detalle
                     : venta.getDetalles()) {
 
-                productos += detalle.getCantidad();
+                productos +=
+                        detalle.getCantidad();
             }
 
             modeloVentas.addRow(
@@ -955,10 +1423,11 @@ public class VentanaVentas extends JPanel {
         for (Venta venta
                 : logicaVenta.listarVentas()) {
 
-            mayor = Math.max(
-                    mayor,
-                    venta.getNumeroVenta()
-            );
+            mayor =
+                    Math.max(
+                            mayor,
+                            venta.getNumeroVenta()
+                    );
         }
 
         return mayor + 1;
@@ -967,7 +1436,9 @@ public class VentanaVentas extends JPanel {
     private int leerCantidad() {
 
         String texto =
-                txtCantidad.getText().trim();
+                txtCantidad
+                        .getText()
+                        .trim();
 
         if (texto.isEmpty()) {
 
@@ -981,13 +1452,23 @@ public class VentanaVentas extends JPanel {
         try {
 
             cantidad =
-                    Integer.parseInt(texto);
+                    Integer.parseInt(
+                            texto
+                    );
 
         } catch (NumberFormatException e) {
 
             throw new IllegalArgumentException(
                     "La cantidad debe ser "
                     + "un numero entero."
+            );
+        }
+
+        if (cantidad <= 0) {
+
+            throw new IllegalArgumentException(
+                    "La cantidad debe ser "
+                    + "mayor que cero."
             );
         }
 
@@ -1000,7 +1481,8 @@ public class VentanaVentas extends JPanel {
         for (DetalleVenta detalle
                 : detallesActuales) {
 
-            if (detalle.getMedicamento()
+            if (detalle
+                    .getMedicamento()
                     .getIdMedicamento()
                     == idMedicamento) {
 
@@ -1015,7 +1497,9 @@ public class VentanaVentas extends JPanel {
             int idMedicamento) {
 
         DetalleVenta detalle =
-                buscarDetalle(idMedicamento);
+                buscarDetalle(
+                        idMedicamento
+                );
 
         return detalle == null
                 ? 0
