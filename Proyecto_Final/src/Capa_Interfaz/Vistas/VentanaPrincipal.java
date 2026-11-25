@@ -1,17 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Capa_Interfaz.Vistas;
 
+import Capa_Datos.DatosCliente;
+import Capa_Datos.DatosMedicamento;
+import Capa_Datos.DatosVenta;
+
 import Capa_LogicaNegocio.LogicaCategoria;
+import Capa_LogicaNegocio.LogicaCliente;
+import Capa_LogicaNegocio.LogicaMedicamento;
+import Capa_LogicaNegocio.LogicaVenta;
+import Capa_LogicaNegocio.LogicaProveedor;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -24,7 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class VentanaPrincipal extends JFrame {
-
+    
     // Colores principales
     private final Color AZUL_OSCURO = new Color(23, 37, 58);
     private final Color AZUL_SECUNDARIO = new Color(34, 52, 78);
@@ -32,13 +36,32 @@ public class VentanaPrincipal extends JFrame {
     private final Color FONDO = new Color(242, 245, 249);
     private final Color TEXTO = new Color(40, 52, 70);
 
-    // Contenedor que permite cambiar entre secciones
+    // Contenedor para cambiar entre secciones
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel panelContenido = new JPanel(cardLayout);
 
-    // Lógica compartida entre las ventanas
-    private final LogicaCategoria logicaCategoria = new LogicaCategoria();
+    // Datos compartidos entre las ventanas
+    private final DatosCliente datosCliente = new DatosCliente();
+    private final DatosMedicamento datosMedicamento = new DatosMedicamento();
+    private final DatosVenta datosVenta = new DatosVenta();
+
     
+    // Logicas compartidas entre las ventanas
+    private final LogicaCliente logicaCliente =
+            new LogicaCliente(datosCliente);
+
+    private final LogicaMedicamento logicaMedicamento =
+            new LogicaMedicamento(datosMedicamento);
+    
+    private final LogicaProveedor logicaProveedor = 
+            new LogicaProveedor();
+            
+    private final LogicaVenta logicaVenta =
+            new LogicaVenta(datosVenta, datosMedicamento);
+
+    private final LogicaCategoria logicaCategoria =
+            new LogicaCategoria();
+
     public VentanaPrincipal() {
 
         setTitle("Sistema de Gestion de Farmacia");
@@ -49,18 +72,14 @@ public class VentanaPrincipal extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // Construir los componentes
         crearMenuLateral();
         crearEncabezado();
         crearContenido();
 
-        // Mostrar inicio al abrir
         cardLayout.show(panelContenido, "Inicio");
     }
 
-    // =========================================
-    // MENU LATERAL
-    // =========================================
+    // Menu lateral
     private void crearMenuLateral() {
 
         JPanel menu = new JPanel();
@@ -108,21 +127,21 @@ public class VentanaPrincipal extends JFrame {
         boton.setMaximumSize(new Dimension(220, 48));
         boton.setPreferredSize(new Dimension(220, 48));
         boton.setHorizontalAlignment(SwingConstants.LEFT);
-
         boton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         boton.setForeground(Color.WHITE);
         boton.setBackground(AZUL_OSCURO);
-
         boton.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         boton.setFocusPainted(false);
         boton.setOpaque(true);
         boton.setContentAreaFilled(true);
         boton.setAlignmentX(LEFT_ALIGNMENT);
 
-        boton.addActionListener(e
-                -> cardLayout.show(panelContenido, seccion));
+        boton.addActionListener(
+                e -> cardLayout.show(panelContenido, seccion)
+        );
 
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
+
             @Override
             public void mouseEntered(java.awt.event.MouseEvent e) {
                 boton.setBackground(AZUL_SECUNDARIO);
@@ -137,16 +156,15 @@ public class VentanaPrincipal extends JFrame {
         menu.add(boton);
     }
 
-    // =========================================
-    // ENCABEZADO
-    // =========================================
+    // Encabezado superior
     private void crearEncabezado() {
 
         JPanel encabezado = new JPanel(new BorderLayout());
         encabezado.setBackground(Color.WHITE);
 
         encabezado.setBorder(
-                BorderFactory.createEmptyBorder(18, 30, 18, 30));
+                BorderFactory.createEmptyBorder(18, 30, 18, 30)
+        );
 
         JLabel titulo = new JLabel("Sistema de Gestion de Farmacia");
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 19));
@@ -166,52 +184,68 @@ public class VentanaPrincipal extends JFrame {
         add(superior, BorderLayout.NORTH);
     }
 
-    // =========================================
-    // CONTENIDO PRINCIPAL
-    // =========================================
+    // Agrega las distintas ventanas al CardLayout
     private void crearContenido() {
 
         panelContenido.setBackground(FONDO);
 
-        panelContenido.add(crearPanelInicio(), "Inicio");
+        panelContenido.add(
+                crearPanelInicio(),
+                "Inicio"
+        );
 
         panelContenido.add(
-                crearPanelVacio("Medicamentos",
-                        "Administracion del inventario de medicamentos."),
-                "Medicamentos");
+            new VentanaMedicamentos(
+                logicaMedicamento,
+                logicaCategoria,
+                logicaProveedor),
+            "Medicamentos");
 
+        // Categorias utiliza la logica compartida
         panelContenido.add(
                 new VentanaCategorias(logicaCategoria),
-                "Categorias");
+                "Categorias"
+        );
 
+        // Clientes utiliza la misma LogicaCliente que Ventas
         panelContenido.add(
-                new VentanaClientes(),
-                "Clientes");
-        panelContenido.add(
-                crearPanelVacio("Proveedores",
-                        "Administracion de proveedores."),
-                "Proveedores");
+                new VentanaClientes(logicaCliente),
+                "Clientes"
+        );
 
+       panelContenido.add(
+            new VentanaProveedores(logicaProveedor),
+            "Proveedores");
+
+        // Ventas recibe las mismas instancias compartidas
         panelContenido.add(
-                crearPanelVacio("Ventas",
-                        "Registro y consulta de ventas."),
-                "Ventas");
+                new VentanaVentas(
+                        logicaCliente,
+                        logicaMedicamento,
+                        logicaVenta
+                ),
+                "Ventas"
+        );
 
         add(panelContenido, BorderLayout.CENTER);
     }
 
-    // =========================================
-    // PANEL DE INICIO
-    // =========================================
+    // Panel principal
     private JPanel crearPanelInicio() {
 
         JPanel panel = new JPanel(new BorderLayout(15, 20));
         panel.setBackground(FONDO);
+
         panel.setBorder(
-                BorderFactory.createEmptyBorder(30, 35, 30, 35));
+                BorderFactory.createEmptyBorder(30, 35, 30, 35)
+        );
 
         JPanel encabezado = new JPanel();
-        encabezado.setLayout(new BoxLayout(encabezado, BoxLayout.Y_AXIS));
+
+        encabezado.setLayout(
+                new BoxLayout(encabezado, BoxLayout.Y_AXIS)
+        );
+
         encabezado.setBackground(FONDO);
 
         JLabel titulo = new JLabel("Panel principal");
@@ -219,73 +253,157 @@ public class VentanaPrincipal extends JFrame {
         titulo.setForeground(TEXTO);
 
         JLabel descripcion = new JLabel(
-                "Bienvenido al sistema de gestion de farmacia.");
+                "Bienvenido al sistema de gestion de farmacia."
+        );
 
-        descripcion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        descripcion.setFont(
+                new Font("Segoe UI", Font.PLAIN, 14)
+        );
+
         descripcion.setForeground(Color.GRAY);
 
         encabezado.add(titulo);
         encabezado.add(Box.createVerticalStrut(8));
         encabezado.add(descripcion);
 
-        JPanel estadisticas = new JPanel(new GridLayout(1, 3, 18, 0));
+        JPanel estadisticas =
+                new JPanel(new GridLayout(1, 3, 18, 0));
+
         estadisticas.setBackground(FONDO);
 
         estadisticas.add(
-                crearTarjeta("Medicamentos", "Inventario", AZUL_ACENTO));
+                crearTarjeta(
+                        "Medicamentos",
+                        "Inventario",
+                        AZUL_ACENTO
+                )
+        );
 
         estadisticas.add(
-                crearTarjeta("Clientes", "Registrados", new Color(45, 155, 120)));
+                crearTarjeta(
+                        "Clientes",
+                        "Registrados",
+                        new Color(45, 155, 120)
+                )
+        );
 
         estadisticas.add(
-                crearTarjeta("Ventas", "Registradas", new Color(130, 100, 190)));
+                crearTarjeta(
+                        "Ventas",
+                        "Registradas",
+                        new Color(130, 100, 190)
+                )
+        );
 
         JPanel informacion = new JPanel(new BorderLayout());
         informacion.setBackground(Color.WHITE);
-        informacion.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(225, 230, 237)),
-                BorderFactory.createEmptyBorder(22, 22, 22, 22)));
+
+        informacion.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(
+                                new Color(225, 230, 237)
+                        ),
+                        BorderFactory.createEmptyBorder(
+                                22, 22, 22, 22
+                        )
+                )
+        );
 
         JLabel mensaje = new JLabel(
                 "<html><h2>Bienvenido</h2>"
                 + "<p>Seleccione una opcion del menu lateral "
                 + "para comenzar a administrar la farmacia.</p>"
-                + "</html>");
+                + "</html>"
+        );
 
-        mensaje.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        informacion.add(mensaje, BorderLayout.CENTER);
+        mensaje.setFont(
+                new Font("Segoe UI", Font.PLAIN, 14)
+        );
 
-        JPanel centro = new JPanel(new BorderLayout(0, 25));
+        informacion.add(
+                mensaje,
+                BorderLayout.CENTER
+        );
+
+        JPanel centro =
+                new JPanel(new BorderLayout(0, 25));
+
         centro.setBackground(FONDO);
-        centro.add(encabezado, BorderLayout.NORTH);
-        centro.add(estadisticas, BorderLayout.CENTER);
 
-        panel.add(centro, BorderLayout.NORTH);
-        panel.add(informacion, BorderLayout.CENTER);
+        centro.add(
+                encabezado,
+                BorderLayout.NORTH
+        );
+
+        centro.add(
+                estadisticas,
+                BorderLayout.CENTER
+        );
+
+        panel.add(
+                centro,
+                BorderLayout.NORTH
+        );
+
+        panel.add(
+                informacion,
+                BorderLayout.CENTER
+        );
 
         return panel;
     }
 
-    // =========================================
-    // TARJETAS DE ESTADISTICAS
-    // =========================================
+    // Tarjetas de la pantalla principal
     private JPanel crearTarjeta(
-            String titulo, String descripcion, Color color) {
+            String titulo,
+            String descripcion,
+            Color color) {
 
         JPanel tarjeta = new JPanel();
-        tarjeta.setLayout(new BoxLayout(tarjeta, BoxLayout.Y_AXIS));
+
+        tarjeta.setLayout(
+                new BoxLayout(
+                        tarjeta,
+                        BoxLayout.Y_AXIS
+                )
+        );
+
         tarjeta.setBackground(Color.WHITE);
 
-        tarjeta.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 5, 0, 0, color),
-                BorderFactory.createEmptyBorder(20, 20, 20, 15)));
+        tarjeta.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(
+                                0, 5, 0, 0, color
+                        ),
+                        BorderFactory.createEmptyBorder(
+                                20, 20, 20, 15
+                        )
+                )
+        );
 
         JLabel nombre = new JLabel(titulo);
-        nombre.setFont(new Font("Segoe UI", Font.BOLD, 18));
+
+        nombre.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        18
+                )
+        );
+
         nombre.setForeground(TEXTO);
 
-        JLabel detalle = new JLabel(descripcion);
-        detalle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        JLabel detalle =
+                new JLabel(descripcion);
+
+        detalle.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        13
+                )
+        );
+
         detalle.setForeground(Color.GRAY);
 
         tarjeta.add(nombre);
@@ -295,33 +413,75 @@ public class VentanaPrincipal extends JFrame {
         return tarjeta;
     }
 
-    // =========================================
-    // PANELES TEMPORALES
-    // =========================================
+    // Panel temporal para modulos que aun no tienen GUI
     private JPanel crearPanelVacio(
-            String titulo, String descripcion) {
+            String titulo,
+            String descripcion) {
 
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel =
+                new JPanel(new BorderLayout());
+
         panel.setBackground(FONDO);
+
         panel.setBorder(
-                BorderFactory.createEmptyBorder(35, 35, 35, 35));
+                BorderFactory.createEmptyBorder(
+                        35, 35, 35, 35
+                )
+        );
 
         JPanel contenido = new JPanel();
-        contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
+
+        contenido.setLayout(
+                new BoxLayout(
+                        contenido,
+                        BoxLayout.Y_AXIS
+                )
+        );
+
         contenido.setBackground(Color.WHITE);
 
-        contenido.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        contenido.setBorder(
+                BorderFactory.createEmptyBorder(
+                        30, 30, 30, 30
+                )
+        );
 
         JLabel nombre = new JLabel(titulo);
-        nombre.setFont(new Font("Segoe UI", Font.BOLD, 26));
+
+        nombre.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        26
+                )
+        );
+
         nombre.setForeground(TEXTO);
 
-        JLabel texto = new JLabel(descripcion);
-        texto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        JLabel texto =
+                new JLabel(descripcion);
+
+        texto.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.PLAIN,
+                        14
+                )
+        );
+
         texto.setForeground(Color.GRAY);
 
-        JLabel estado = new JLabel("Modulo en desarrollo");
-        estado.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        JLabel estado =
+                new JLabel("Modulo en desarrollo");
+
+        estado.setFont(
+                new Font(
+                        "Segoe UI",
+                        Font.BOLD,
+                        13
+                )
+        );
+
         estado.setForeground(AZUL_ACENTO);
 
         contenido.add(nombre);
@@ -330,18 +490,21 @@ public class VentanaPrincipal extends JFrame {
         contenido.add(Box.createVerticalStrut(25));
         contenido.add(estado);
 
-        panel.add(contenido, BorderLayout.CENTER);
+        panel.add(
+                contenido,
+                BorderLayout.CENTER
+        );
 
         return panel;
     }
 
-    // =========================================
-    // EJECUCION INDEPENDIENTE
-    // =========================================
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-            VentanaPrincipal ventana = new VentanaPrincipal();
+
+            VentanaPrincipal ventana =
+                    new VentanaPrincipal();
+
             ventana.setVisible(true);
         });
     }
